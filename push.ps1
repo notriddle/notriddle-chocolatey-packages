@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('gnuplot', 'thrift', 'openldap', 'boot2docker', 'octave', 'activator', 'miniconda','miniconda3')]
+    [ValidateSet('rust')]
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string]$Package,
