@@ -1,4 +1,4 @@
-# chaliy-chocolatey-packages
+# notriddle-chocolatey-packages
 
 ## Push
 
