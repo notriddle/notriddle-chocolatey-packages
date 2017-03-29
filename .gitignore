@@ -1,3 +1,5 @@
 *.nupkg
 
 Thumbs.db
+
+*.sublime-workspace
