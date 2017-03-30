@@ -1,9 +1,15 @@
 # notriddle-chocolatey-packages
 
+## Pull new versions of all the packages
+
+```
+.\update.ps1
+```
+
 ## Push
 
 ```
-push package
+.\push.ps1 $package
 ```
 
 ## Test
