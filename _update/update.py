@@ -47,13 +47,15 @@ packages = [
         "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-msvc"],
         "x86_64": channel["pkg"]["rust"]["target"]["x86_64-pc-windows-msvc"],
         "suffix": "-ms",
-        "desc": "Visual Studio ABI"
+        "desc": "Visual Studio ABI",
+        "version": version
     },
     {
         "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-gnu"],
         "x86_64": channel["pkg"]["rust"]["target"]["x86_64-pc-windows-gnu"],
         "suffix": "",
-        "desc": "GNU ABI"
+        "desc": "GNU ABI",
+        "version": version
     }
 ]
 
@@ -70,7 +72,7 @@ for package in packages:
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>rust%(suffix)s</id>
-    <version>1.16.0</version>
+    <version>%(version)s</version>
     <title>Rust (%(desc)s)</title>
     <authors>Mozilla</authors>
     <owners>Mike Chaliy, Francisco Gómez, Michael Howell</owners>
