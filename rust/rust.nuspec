@@ -14,6 +14,6 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
     <summary>A systems programming language that runs blazingly fast, prevents nearly all segfaults, and guarantees thread safety</summary>
-    <tags>rust,admin</tags>
+    <tags>rust admin</tags>
   </metadata>
 </package>
