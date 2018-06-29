@@ -1,9 +1,9 @@
 ﻿$PackageName = 'rust'
 $InstallerType = 'msi'
-$Url = 'https://static.rust-lang.org/dist/2018-05-29/rust-1.26.1-i686-pc-windows-msvc.msi'
-$Checksum = '74214bba1dd638ba97ace080dc2161f165dfdc57bb31f0f11cdc648bf8083841'
-$Url64 = "https://static.rust-lang.org/dist/2018-05-29/rust-1.26.1-x86_64-pc-windows-msvc.msi"
-$Checksum64 = '0d9d811b10c6e9787f562fcf44f05a2a37100981ac34ebd9955987fb683905ba'
+$Url = 'https://static.rust-lang.org/dist/2018-06-21/rust-1.27.0-i686-pc-windows-msvc.msi'
+$Checksum = '8eda61fd09d264b5c723411da2a57726dfcf6f52263f4205bc7bd9ceb0804b4b'
+$Url64 = "https://static.rust-lang.org/dist/2018-06-21/rust-1.27.0-x86_64-pc-windows-msvc.msi"
+$Checksum64 = '400219afb45c2a719b74c7680aaad2e60aee931734f9aa5163a5a73d0aa6fc49'
 $ChecksumType = 'sha256'
 $SilentArgs = '/quiet'
 $ValidExitCodes = @(0,3010)
