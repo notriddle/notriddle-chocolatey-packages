@@ -42,20 +42,27 @@ assert(channel["manifest-version"] == "2")
 
 version = channel["pkg"]["rust"]["version"].split(" ")[0]
 
+with open ("../rust-release-notes.txt", "r") as notes:
+    release_notes = "".join(notes.readlines())
+
 packages = [
     {
         "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-msvc"],
         "x86_64": channel["pkg"]["rust"]["target"]["x86_64-pc-windows-msvc"],
         "suffix": "-ms",
+        "platform": "pc-windows-msvc",
         "desc": "Visual Studio ABI",
-        "version": version
+        "version": version,
+        "release_notes": release_notes
     },
     {
         "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-gnu"],
         "x86_64": channel["pkg"]["rust"]["target"]["x86_64-pc-windows-gnu"],
         "suffix": "",
+        "platform": "pc-windows-gnu",
         "desc": "GNU ABI",
-        "version": version
+        "version": version,
+        "release_notes": release_notes
     }
 ]
 
@@ -85,25 +92,66 @@ for package in packages:
     <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
     <summary>A systems programming language that runs blazingly fast, prevents nearly all segfaults, and guarantees thread safety</summary>
     <tags>rust admin</tags>
+    <releaseNotes><![CDATA[%(release_notes)s]]></releaseNotes>
   </metadata>
 </package>""" % package
         nuspec_open.write(nuspec)
-    package32_url = package["i686"]["url"].replace("tar.gz", "msi")
+    package32_url = package["i686"]["url"]
     package32_sha256 = requests.get(package32_url + ".sha256").text.split(" ")[0]
-    package64_url = package["x86_64"]["url"].replace("tar.gz", "msi")
+    package64_url = package["x86_64"]["url"]
     package64_sha256 = requests.get(package64_url + ".sha256").text.split(" ")[0]
     with codecs.open(package_path + "tools/chocolateyInstall.ps1", 'w', 'utf-8') as install_open:
-        install = """\ufeff$PackageName = 'rust'
-$InstallerType = 'msi'
-$Url = '%(url)s'
-$Checksum = '%(sha256)s'
-$Url64 = "%(url64)s"
-$Checksum64 = '%(sha256_64)s'
-$ChecksumType = 'sha256'
-$SilentArgs = '/quiet'
-$ValidExitCodes = @(0,3010)
- 
-Install-ChocolateyPackage "$PackageName" "$InstallerType" "$SilentArgs" "$Url" "$Url64" `
-    -checksum $Checksum -checksum64 $Checksum64 -checksumType $ChecksumType -checksumType64 $ChecksumType `
-    -validExitCodes $ValidExitCodes""" % {"url": package32_url, "sha256": package32_sha256, "url64": package64_url, "sha256_64": package64_sha256}
+        install = """\ufeff$ErrorActionPreference = 'Stop';
+
+$version     = $env:chocolateyPackageVersion
+$packageName = $env:chocolateyPackageName
+$toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+
+$url         = "%(url)s"
+$url64       = "%(url64)s"
+
+$packageArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = $url
+    checksum       = "%(sha256)s"
+    checksumType   = "sha256"
+    url64bit       = $url64
+    checksum64     = "%(sha256_64)s"
+    checksumType64 = "sha256"
+}
+
+# Note to the reader: Install-ChocolateyZipFile only extracts one layer,
+# so it turns the tar.gz files that Rust distributes into bar tar files.
+# Useless.
+Install-ChocolateyZipPackage @packageArgs
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-$version-i686-%(platform)s.tar -FileFullPath64 $toolsDir/rust-$version-x86_64-%(platform)s.tar -Destination $toolsDir
+rm $toolsDir/rust-$version-*.tar
+# This is basically what install.sh does, though with less customizability,
+# because we delegate to Chocolatey for things like uninstalling and deciding where $toolsDir is.
+cd $toolsDir/rust-$version-*
+cat components | foreach {
+  $c = $_
+  cat $toolsDir/rust-$version-*/$c/manifest.in | foreach {
+    if ($_.StartsWith("file:")) {
+      $f = $_.SubString(5)
+      $d = (split-path -parent $f)
+      if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
+      mv $toolsDir/rust-$version-*/$c/$f $toolsDir/$f
+    }
+    # The assumption is that a manifest with a `dir:` directive is the sole provider of that directory,
+    # unlike other rust components, where we're expected to merge the directories together.
+    # Only component I've found with a `dir:` directive, currently, is rust-docs.
+    if ($_.StartsWith("dir:")) {
+      $f = $_.SubString(4)
+      $d = (split-path -parent $f)
+      if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
+      mv $toolsDir/rust-$version-*/$c/$f $toolsDir/$f
+    }
+  }
+}
+cd $toolsDir
+rm -recurse -force $toolsDir/rust-$version-*.tar
+rm -recurse -force $toolsDir/rust-$version-*
+""" % {"url": package32_url, "sha256": package32_sha256, "url64": package64_url, "sha256_64": package64_sha256, "platform": package["platform"]}
         install_open.write(install)

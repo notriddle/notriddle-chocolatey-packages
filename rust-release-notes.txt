@@ -1,21 +1,4 @@
-﻿<?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
-    <id>rust-ms</id>
-    <version>1.34.1</version>
-    <title>Rust (Visual Studio ABI)</title>
-    <authors>Mozilla</authors>
-    <owners>Mike Chaliy, Francisco Gómez, Michael Howell</owners>
-    <licenseUrl>https://github.com/rust-lang/rust/blob/master/LICENSE-MIT</licenseUrl>
-    <projectUrl>https://www.rust-lang.org/</projectUrl>
-    <projectSourceUrl>https://github.com/rust-laeg/rust</projectSourceUrl>
-    <bugTrackerUrl>https://github.com/rust-lang/rust/issues</bugTrackerUrl>
-    <iconUrl>http://www.rust-lang.org/logos/rust-logo-128x128-blk.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
-    <summary>A systems programming language that runs blazingly fast, prevents nearly all segfaults, and guarantees thread safety</summary>
-    <tags>rust admin</tags>
-    <releaseNotes><![CDATA[Version 1.35.0 (2019-05-23)
+Version 1.35.0 (2019-05-23)
 ===========================
 
 Chocolatey package
@@ -171,6 +154,3 @@ Compatibility Notes
 [`Instant::checked_sub`]: https://doc.rust-lang.org/std/time/struct.Instant.html#method.checked_sub
 [`SystemTime::checked_add`]: https://doc.rust-lang.org/std/time/struct.SystemTime.html#method.checked_add
 [`SystemTime::checked_sub`]: https://doc.rust-lang.org/std/time/struct.SystemTime.html#method.checked_sub
-]]></releaseNotes>
-  </metadata>
-</package>
