@@ -103,6 +103,15 @@ for package in packages:
     with codecs.open(package_path + "tools/chocolateyInstall.ps1", 'w', 'utf-8') as install_open:
         install = """\ufeff$ErrorActionPreference = 'Stop';
 
+# Uninstall old versions of Rust.
+if (Test-ProcessAdminRights) {
+  Get-WmiObject -Class Win32_Product | Where-Object {
+    ($_.Vendor -eq "The Rust Project Developers") -And ($_.Name -match "Rust")
+  } | foreach {
+    $_.Uninstall()
+  }
+}
+
 $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
