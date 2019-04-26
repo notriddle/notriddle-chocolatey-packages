@@ -75,7 +75,8 @@ for package in packages:
     os.mkdir(package_path)
     os.mkdir(package_path + "/tools")
     with codecs.open(package_path + "rust" + package["suffix"] + ".nuspec", 'w', 'utf-8') as nuspec_open:
-        nuspec = """\ufeff<?xml version="1.0"?>
+        nuspec = """\ufeff<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>rust%(suffix)s</id>
@@ -85,13 +86,13 @@ for package in packages:
     <owners>Mike Chaliy, Francisco Gómez, Michael Howell</owners>
     <licenseUrl>https://github.com/rust-lang/rust/blob/master/LICENSE-MIT</licenseUrl>
     <projectUrl>https://www.rust-lang.org/</projectUrl>
-    <projectSourceUrl>https://github.com/rust-laeg/rust</projectSourceUrl>
+    <projectSourceUrl>https://github.com/rust-lang/rust</projectSourceUrl>
     <bugTrackerUrl>https://github.com/rust-lang/rust/issues</bugTrackerUrl>
     <iconUrl>http://www.rust-lang.org/logos/rust-logo-128x128-blk.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
     <summary>A systems programming language that runs blazingly fast, prevents nearly all segfaults, and guarantees thread safety</summary>
-    <tags>rust admin</tags>
+    <tags>rust cli portable programming language sdk</tags>
     <releaseNotes><![CDATA[%(release_notes)s]]></releaseNotes>
   </metadata>
 </package>""" % package
@@ -101,7 +102,9 @@ for package in packages:
     package64_url = package["x86_64"]["url"]
     package64_sha256 = requests.get(package64_url + ".sha256").text.split(" ")[0]
     with codecs.open(package_path + "tools/chocolateyInstall.ps1", 'w', 'utf-8') as install_open:
-        install = """\ufeff$ErrorActionPreference = 'Stop';
+        install = """\ufeff# Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one.
+
+$ErrorActionPreference = 'Stop';
 
 # Uninstall old versions of Rust.
 if (Test-ProcessAdminRights) {

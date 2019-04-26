@@ -1,4 +1,6 @@
-﻿$ErrorActionPreference = 'Stop';
+﻿# Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one.
+
+$ErrorActionPreference = 'Stop';
 
 # Uninstall old versions of Rust.
 if (Test-ProcessAdminRights) {
