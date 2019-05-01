@@ -75,8 +75,8 @@ for package in packages:
     os.mkdir(package_path)
     os.mkdir(package_path + "/tools")
     with codecs.open(package_path + "rust" + package["suffix"] + ".nuspec", 'w', 'utf-8') as nuspec_open:
-        nuspec = """\ufeff<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
-<?xml version="1.0" encoding="utf-8"?>
+        nuspec = """\ufeff<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>rust%(suffix)s</id>
@@ -101,6 +101,8 @@ for package in packages:
     package32_sha256 = requests.get(package32_url + ".sha256").text.split(" ")[0]
     package64_url = package["x86_64"]["url"]
     package64_sha256 = requests.get(package64_url + ".sha256").text.split(" ")[0]
+    src_url = channel["pkg"]["rust-src"]["target"]["*"]["url"]
+    src_sha256 = requests.get(src_url + ".sha256").text.split(" ")[0]
     with codecs.open(package_path + "tools/chocolateyInstall.ps1", 'w', 'utf-8') as install_open:
         install = """\ufeff# Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one.
 
@@ -133,37 +135,52 @@ $packageArgs = @{
     checksumType64 = "sha256"
 }
 
+$packageSrcArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = "%(src_url)s"
+    checksum       = "%(src_sha256)s"
+    checksumType   = "sha256"
+}
+
 # Note to the reader: Install-ChocolateyZipFile only extracts one layer,
 # so it turns the tar.gz files that Rust distributes into bar tar files.
 # Useless.
 Install-ChocolateyZipPackage @packageArgs
 Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-$version-i686-%(platform)s.tar -FileFullPath64 $toolsDir/rust-$version-x86_64-%(platform)s.tar -Destination $toolsDir
-rm $toolsDir/rust-$version-*.tar
+Install-ChocolateyZipPackage @packageSrcArgs
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-src-$version.tar -Destination $toolsDir
 # This is basically what install.sh does, though with less customizability,
 # because we delegate to Chocolatey for things like uninstalling and deciding where $toolsDir is.
-cd $toolsDir/rust-$version-*
-cat components | foreach {
-  $c = $_
-  cat $toolsDir/rust-$version-*/$c/manifest.in | foreach {
-    if ($_.StartsWith("file:")) {
-      $f = $_.SubString(5)
-      $d = (split-path -parent $f)
-      if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
-      mv $toolsDir/rust-$version-*/$c/$f $toolsDir/$f
-    }
-    # The assumption is that a manifest with a `dir:` directive is the sole provider of that directory,
-    # unlike other rust components, where we're expected to merge the directories together.
-    # Only component I've found with a `dir:` directive, currently, is rust-docs.
-    if ($_.StartsWith("dir:")) {
-      $f = $_.SubString(4)
-      $d = (split-path -parent $f)
-      if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
-      mv $toolsDir/rust-$version-*/$c/$f $toolsDir/$f
+function Install-RustPackage([string]$Directory) {
+  cd $Directory
+  cat components | foreach {
+    $c = $_
+    cat $Directory/$c/manifest.in | foreach {
+      if ($_.StartsWith("file:")) {
+        $f = $_.SubString(5)
+        $d = (split-path -parent $f)
+        if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
+        mv $Directory/$c/$f $toolsDir/$f
+      }
+      # The assumption is that a manifest with a `dir:` directive is the sole provider of that directory,
+      # unlike other rust components, where we're expected to merge the directories together.
+      # Only component I've found with a `dir:` directive, currently, is rust-docs.
+      if ($_.StartsWith("dir:")) {
+        $f = $_.SubString(4)
+        $d = (split-path -parent $f)
+        if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
+        mv $Directory/$c/$f $toolsDir/$f
+      }
     }
   }
+  cd $toolsDir
 }
-cd $toolsDir
 rm -recurse -force $toolsDir/rust-$version-*.tar
+rm -recurse -force $toolsDir/rust-src-$version.tar
+dir $toolsDir/rust-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+Install-RustPackage $toolsDir/rust-src-$version
 rm -recurse -force $toolsDir/rust-$version-*
-""" % {"url": package32_url, "sha256": package32_sha256, "url64": package64_url, "sha256_64": package64_sha256, "platform": package["platform"]}
+rm -recurse -force $toolsDir/rust-src-$version
+""" % {"url": package32_url, "sha256": package32_sha256, "url64": package64_url, "sha256_64": package64_sha256, "src_url": src_url, "src_sha256": src_sha256, "platform": package["platform"]}
         install_open.write(install)
