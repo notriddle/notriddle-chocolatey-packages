@@ -11,7 +11,7 @@ if (Test-ProcessAdminRights) {
   }
 }
 
-$version     = $env:chocolateyPackageVersion
+$version     = "1.35.0"
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
