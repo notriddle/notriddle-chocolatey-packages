@@ -15,27 +15,33 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$url         = "https://static.rust-lang.org/dist/2019-09-26/rust-1.38.0-i686-pc-windows-msvc.tar.gz"
-$url64       = "https://static.rust-lang.org/dist/2019-09-26/rust-1.38.0-x86_64-pc-windows-msvc.tar.gz"
+$url         = "https://static.rust-lang.org/dist/2019-11-07/rust-1.39.0-i686-pc-windows-msvc.tar.gz"
+$url64       = "https://static.rust-lang.org/dist/2019-11-07/rust-1.39.0-x86_64-pc-windows-msvc.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $url
-    checksum       = "1662d25ab78f29114fc2799f5f17a111d4bc9d91b021c543e4362c6144ac5f06"
+    checksum       = "9e75d4cc5ecbc1dd95e132b56715fd7cbfc5ccccdb3529a4d763520d810ad7df"
     checksumType   = "sha256"
     url64bit       = $url64
-    checksum64     = "99e2e22084a7c6a114f5353800677e1f7eb4b8cecf1b8841e21ac9579fe8da8c"
+    checksum64     = "3c96b221af3343c04bf81e621a0b97a2452ae1803ecc2841a162690d8ebfe46f"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2019-09-26/rust-src-1.38.0.tar.gz"
-    checksum       = "082891ceb8547c4a0fbadcd1309fb0219b935f3dc5a38d2b3b77f40a670a0a54"
+    url            = "https://static.rust-lang.org/dist/2019-11-07/rust-src-1.39.0.tar.gz"
+    checksum       = "068186f866703ffeae804a0642588a78a492f03b62c0113e6cdfcb4eeca56df6"
     checksumType   = "sha256"
 }
+
+# Updates require us to get rid of the existing installation
+if (Test-Path bin) { rm -Recurse -Force bin }
+if (Test-Path etc) { rm -Recurse -Force etc }
+if (Test-Path lib) { rm -Recurse -Force lib }
+if (Test-Path share) { rm -Recurse -Force share }
 
 # Note to the reader: Install-ChocolateyZipFile only extracts one layer,
 # so it turns the tar.gz files that Rust distributes into bar tar files.

@@ -15,27 +15,33 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$url         = "https://static.rust-lang.org/dist/2019-09-26/rust-1.38.0-i686-pc-windows-gnu.tar.gz"
-$url64       = "https://static.rust-lang.org/dist/2019-09-26/rust-1.38.0-x86_64-pc-windows-gnu.tar.gz"
+$url         = "https://static.rust-lang.org/dist/2019-11-07/rust-1.39.0-i686-pc-windows-gnu.tar.gz"
+$url64       = "https://static.rust-lang.org/dist/2019-11-07/rust-1.39.0-x86_64-pc-windows-gnu.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $url
-    checksum       = "c6646e6d7c3cb4cc26dee9ade0341e5a407bb040650b4ad601d98707d9afbb6f"
+    checksum       = "fcb85f968b13dcb909a3cb197c8ca1aff36c5d75c625d7dbc99aa11f50d849a5"
     checksumType   = "sha256"
     url64bit       = $url64
-    checksum64     = "7b63fd61e7d3d70b996d5af0c32cb47634988faf0ab7047802321144c05c08e9"
+    checksum64     = "0f7f50605786dc4ab02a33eb9ef840fd212d20ce395cb19886b7690608a15d1d"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2019-09-26/rust-src-1.38.0.tar.gz"
-    checksum       = "082891ceb8547c4a0fbadcd1309fb0219b935f3dc5a38d2b3b77f40a670a0a54"
+    url            = "https://static.rust-lang.org/dist/2019-11-07/rust-src-1.39.0.tar.gz"
+    checksum       = "068186f866703ffeae804a0642588a78a492f03b62c0113e6cdfcb4eeca56df6"
     checksumType   = "sha256"
 }
+
+# Updates require us to get rid of the existing installation
+if (Test-Path bin) { rm -Recurse -Force bin }
+if (Test-Path etc) { rm -Recurse -Force etc }
+if (Test-Path lib) { rm -Recurse -Force lib }
+if (Test-Path share) { rm -Recurse -Force share }
 
 # Note to the reader: Install-ChocolateyZipFile only extracts one layer,
 # so it turns the tar.gz files that Rust distributes into bar tar files.

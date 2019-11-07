@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('rust', 'rust-ms')]
+    [ValidateSet('rust', 'rust-ms', 'chars')]
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string]$Package,
@@ -9,6 +9,10 @@ param(
 # choco apiKey -k YOURS-VERY-OWN-API-KEY -source https://chocolatey.org/
 
 $here = (Split-Path -parent $MyInvocation.MyCommand.Definition)
+
+if ($Package -eq 'chars' -and (test-path 'chars/chars')) {
+  rm -recurse -force 'chars/chars'
+}
 
 pushd
 
