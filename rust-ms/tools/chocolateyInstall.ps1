@@ -38,10 +38,10 @@ $packageSrcArgs = @{
 }
 
 # Updates require us to get rid of the existing installation
-if (Test-Path bin) { rm -Recurse -Force bin }
-if (Test-Path etc) { rm -Recurse -Force etc }
-if (Test-Path lib) { rm -Recurse -Force lib }
-if (Test-Path share) { rm -Recurse -Force share }
+if (Test-Path $toolsDirin) { rm -Recurse -Force $toolsDirin }
+if (Test-Path $toolsDir\etc) { rm -Recurse -Force $toolsDir\etc }
+if (Test-Path $toolsDir\lib) { rm -Recurse -Force $toolsDir\lib }
+if (Test-Path $toolsDir\share) { rm -Recurse -Force $toolsDir\share }
 
 # Note to the reader: Install-ChocolateyZipFile only extracts one layer,
 # so it turns the tar.gz files that Rust distributes into bar tar files.
