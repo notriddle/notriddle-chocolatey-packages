@@ -38,7 +38,7 @@ $packageSrcArgs = @{
 }
 
 # Updates require us to get rid of the existing installation
-if (Test-Path $toolsDirin) { rm -Recurse -Force $toolsDirin }
+if (Test-Path $toolsDir\bin) { rm -Recurse -Force $toolsDir\bin }
 if (Test-Path $toolsDir\etc) { rm -Recurse -Force $toolsDir\etc }
 if (Test-Path $toolsDir\lib) { rm -Recurse -Force $toolsDir\lib }
 if (Test-Path $toolsDir\share) { rm -Recurse -Force $toolsDir\share }
