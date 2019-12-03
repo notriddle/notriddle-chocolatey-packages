@@ -145,6 +145,7 @@ $packageSrcArgs = @{
 }
 
 # Updates require us to get rid of the existing installation
+# https://chocolatey.org/packages/rust#comment-4632965834
 if (Test-Path $toolsDir\\bin) { rm -Recurse -Force $toolsDir\\bin }
 if (Test-Path $toolsDir\\etc) { rm -Recurse -Force $toolsDir\\etc }
 if (Test-Path $toolsDir\\lib) { rm -Recurse -Force $toolsDir\\lib }
@@ -189,5 +190,11 @@ dir $toolsDir/rust-$version-* | foreach { Install-RustPackage (join-path $_ '') 
 Install-RustPackage $toolsDir/rust-src-$version
 rm -recurse -force $toolsDir/rust-$version-*
 rm -recurse -force $toolsDir/rust-src-$version
+# Mark gcc.exe, and its relatives, as not-for-shimming.
+# https://chocolatey.org/packages/rust#comment-4690124900
+$files = Get-ChildItem $toolsDir\\lib\\rustlib\\ -include '*.exe' -recurse -name
+foreach ($file in $files) {
+  New-Item "$toolsDir\\lib\\rustlib\\$file.ignore" -type file -force | Out-Null
+}
 """ % {"url": package32_url, "sha256": package32_sha256, "url64": package64_url, "sha256_64": package64_sha256, "src_url": src_url, "src_sha256": src_sha256, "platform": package["platform"]}
         install_open.write(install)

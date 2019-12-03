@@ -38,6 +38,7 @@ $packageSrcArgs = @{
 }
 
 # Updates require us to get rid of the existing installation
+# https://chocolatey.org/packages/rust#comment-4632965834
 if (Test-Path $toolsDir\bin) { rm -Recurse -Force $toolsDir\bin }
 if (Test-Path $toolsDir\etc) { rm -Recurse -Force $toolsDir\etc }
 if (Test-Path $toolsDir\lib) { rm -Recurse -Force $toolsDir\lib }
@@ -47,9 +48,9 @@ if (Test-Path $toolsDir\share) { rm -Recurse -Force $toolsDir\share }
 # so it turns the tar.gz files that Rust distributes into bar tar files.
 # Useless.
 Install-ChocolateyZipPackage @packageArgs
-Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-$version-i686-pc-windows-msvc.tar -FileFullPath64 $toolsDir/rust-$version-x86_64-pc-windows-msvc.tar -Destination $toolsDir
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-1.39.0-i686-pc-windows-msvc.tar -FileFullPath64 $toolsDir/rust-1.39.0-x86_64-pc-windows-msvc.tar -Destination $toolsDir
 Install-ChocolateyZipPackage @packageSrcArgs
-Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-src-$version.tar -Destination $toolsDir
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-src-1.39.0.tar -Destination $toolsDir
 # This is basically what install.sh does, though with less customizability,
 # because we delegate to Chocolatey for things like uninstalling and deciding where $toolsDir is.
 function Install-RustPackage([string]$Directory) {
@@ -76,9 +77,15 @@ function Install-RustPackage([string]$Directory) {
   }
   cd $toolsDir
 }
-rm -recurse -force $toolsDir/rust-$version-*.tar
-rm -recurse -force $toolsDir/rust-src-$version.tar
-dir $toolsDir/rust-$version-* | foreach { Install-RustPackage (join-path $_ '') }
-Install-RustPackage $toolsDir/rust-src-$version
-rm -recurse -force $toolsDir/rust-$version-*
-rm -recurse -force $toolsDir/rust-src-$version
+rm -recurse -force $toolsDir/rust-1.39.0-*.tar
+rm -recurse -force $toolsDir/rust-src-1.39.0.tar
+dir $toolsDir/rust-1.39.0-* | foreach { Install-RustPackage (join-path $_ '') }
+Install-RustPackage $toolsDir/rust-src-1.39.0
+rm -recurse -force $toolsDir/rust-1.39.0-*
+rm -recurse -force $toolsDir/rust-src-1.39.0
+# Mark gcc.exe, and its relatives, as not-for-shimming.
+# https://chocolatey.org/packages/rust#comment-4690124900
+$files = Get-ChildItem $toolsDir\lib\rustlib\ -include '*.exe' -recurse -name
+foreach ($file in $files) {
+  New-Item "$toolsDir\lib\rustlib\$file.ignore" -type file -force | Out-Null
+}
