@@ -15,25 +15,25 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$url         = "https://static.rust-lang.org/dist/2019-11-07/rust-1.39.0-i686-pc-windows-msvc.tar.gz"
-$url64       = "https://static.rust-lang.org/dist/2019-11-07/rust-1.39.0-x86_64-pc-windows-msvc.tar.gz"
+$url         = "https://static.rust-lang.org/dist/2019-12-19/rust-1.40.0-i686-pc-windows-msvc.tar.gz"
+$url64       = "https://static.rust-lang.org/dist/2019-12-19/rust-1.40.0-x86_64-pc-windows-msvc.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $url
-    checksum       = "9e75d4cc5ecbc1dd95e132b56715fd7cbfc5ccccdb3529a4d763520d810ad7df"
+    checksum       = "ae237dee13530535e03c426b49ccbc94a1604c6a07db6b0c1567d7fbb7e2b9f9"
     checksumType   = "sha256"
     url64bit       = $url64
-    checksum64     = "3c96b221af3343c04bf81e621a0b97a2452ae1803ecc2841a162690d8ebfe46f"
+    checksum64     = "64d98af9b9114a3aaea096ba74c43cad75a2502fb682e941b4701f5d2a2b9272"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2019-11-07/rust-src-1.39.0.tar.gz"
-    checksum       = "068186f866703ffeae804a0642588a78a492f03b62c0113e6cdfcb4eeca56df6"
+    url            = "https://static.rust-lang.org/dist/2019-12-19/rust-src-1.40.0.tar.gz"
+    checksum       = "2a9be624ba682f1331cc4d764e161a1b18e007ded34ffcb1494804bc24e0fd62"
     checksumType   = "sha256"
 }
 
@@ -48,9 +48,9 @@ if (Test-Path $toolsDir\share) { rm -Recurse -Force $toolsDir\share }
 # so it turns the tar.gz files that Rust distributes into bar tar files.
 # Useless.
 Install-ChocolateyZipPackage @packageArgs
-Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-1.39.0-i686-pc-windows-msvc.tar -FileFullPath64 $toolsDir/rust-1.39.0-x86_64-pc-windows-msvc.tar -Destination $toolsDir
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-$version-i686-pc-windows-msvc.tar -FileFullPath64 $toolsDir/rust-$version-x86_64-pc-windows-msvc.tar -Destination $toolsDir
 Install-ChocolateyZipPackage @packageSrcArgs
-Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-src-1.39.0.tar -Destination $toolsDir
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-src-$version.tar -Destination $toolsDir
 # This is basically what install.sh does, though with less customizability,
 # because we delegate to Chocolatey for things like uninstalling and deciding where $toolsDir is.
 function Install-RustPackage([string]$Directory) {
@@ -77,12 +77,12 @@ function Install-RustPackage([string]$Directory) {
   }
   cd $toolsDir
 }
-rm -recurse -force $toolsDir/rust-1.39.0-*.tar
-rm -recurse -force $toolsDir/rust-src-1.39.0.tar
-dir $toolsDir/rust-1.39.0-* | foreach { Install-RustPackage (join-path $_ '') }
-Install-RustPackage $toolsDir/rust-src-1.39.0
-rm -recurse -force $toolsDir/rust-1.39.0-*
-rm -recurse -force $toolsDir/rust-src-1.39.0
+rm -recurse -force $toolsDir/rust-$version-*.tar
+rm -recurse -force $toolsDir/rust-src-$version.tar
+dir $toolsDir/rust-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+Install-RustPackage $toolsDir/rust-src-$version
+rm -recurse -force $toolsDir/rust-$version-*
+rm -recurse -force $toolsDir/rust-src-$version
 # Mark gcc.exe, and its relatives, as not-for-shimming.
 # https://chocolatey.org/packages/rust#comment-4690124900
 $files = Get-ChildItem $toolsDir\lib\rustlib\ -include '*.exe' -recurse -name

@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>rust</id>
-    <version>1.39.0.20191117</version>
+    <version>1.40.0</version>
     <title>Rust (GNU ABI)</title>
     <authors>Mozilla</authors>
     <owners>Mike Chaliy, Francisco Gómez, Michael Howell</owners>
@@ -17,129 +17,142 @@
     <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
     <summary>A systems programming language that runs blazingly fast, prevents nearly all segfaults, and guarantees thread safety</summary>
     <tags>rust cli portable programming language sdk</tags>
-    <releaseNotes><![CDATA[Version 1.39.0 (2019-11-07)
+    <releaseNotes><![CDATA[Version 1.40.0 (2019-12-19)
 ===========================
 
 Language
 --------
-- [You can now create `async` functions and blocks with `async fn`, `async move {}`, and
-  `async {}` respectively, and you can now call `.await` on async expressions.][63209]
-- [You can now use certain attributes on function, closure, and function pointer
-  parameters.][64010] These attributes include `cfg`, `cfg_attr`, `allow`, `warn`,
-  `deny`, `forbid` as well as inert helper attributes used by procedural macro
-  attributes applied to items. e.g.
-  ```
-  fn len(
-      #[cfg(windows)] slice: &[u16],
-      #[cfg(not(windows))] slice: &[u8],
-  ) -> usize {
-      slice.len()
-  }
-  ```
-- [You can now take shared references to bind-by-move patterns in the `if` guards
-  of `match` arms.][63118] e.g.
-  ```
-  fn main() {
-      let array: Box<[u8; 4]> = Box::new([1, 2, 3, 4]);
+- [You can now use tuple `struct`s and tuple `enum` variant's constructors in
+  `const` contexts.][65188] e.g.
 
-      match array {
-          nums
-  //      ---- `nums` is bound by move.
-              if nums.iter().sum::<u8>() == 10
-  //                 ^------ `.iter()` implicitly takes a reference to `nums`.
-          => {
-              drop(nums);
-  //          ----------- Legal as `nums` was bound by move and so we have ownership.
-          }
-          _ => unreachable!(),
-      }
-  }
+  ```
+  pub struct Point(i32, i32);
+
+  const ORIGIN: Point = {
+      let constructor = Point;
+
+      constructor(0, 0)
+  };
   ```
 
-
+- [You can now mark `struct`s, `enum`s, and `enum` variants with the `#[non_exhaustive]` attribute to
+  indicate that there may be variants or fields added in the future.][64639]
+  For example this requires adding a wild-card branch (`_ => {}`) to any match
+  statements on a non-exhaustive `enum`. [(RFC 2008)]
+- [You can now use function-like procedural macros in `extern` blocks and in
+  type positions.][63931] e.g. `type Generated = macro!();`
+- [Function-like and attribute procedural macros can now emit
+  `macro_rules!` items, so you can now have your macros generate macros.][64035]
+- [The `meta` pattern matcher in `macro_rules!` now correctly matches the modern
+  attribute syntax.][63674] For example `(#[$m:meta])` now matches `#[attr]`,
+  `#[attr{tokens}]`, `#[attr[tokens]]`, and `#[attr(tokens)]`.
 
 Compiler
 --------
-- [Added tier 3\* support for the `i686-unknown-uefi` target.][64334]
-- [Added tier 3 support for the `sparc64-unknown-openbsd` target.][63595]
-- [rustc will now trim code snippets in diagnostics to fit in your terminal.][63402]
-  **Note** Cargo currently doesn't use this feature. Refer to
-  [cargo#7315][cargo/7315] to track this feature's progress.
-- [You can now pass `--show-output` argument to test binaries to print the
-  output of successful tests.][62600]
-
+- [Added tier 3 support\* for the
+  `thumbv7neon-unknown-linux-musleabihf` target.][66103]
+- [Added tier 3 support for the
+  `aarch64-unknown-none-softfloat` target.][64589]
+- [Added tier 3 support for the `mips64-unknown-linux-muslabi64`, and
+  `mips64el-unknown-linux-muslabi64` targets.][65843]
 
 \* Refer to Rust's [platform support page][forge-platform-support] for more
-information on Rust's tiered platform support.
+  information on Rust's tiered platform support.
 
 Libraries
 ---------
-- [`Vec::new` and `String::new` are now `const` functions.][64028]
-- [`LinkedList::new` is now a `const` function.][63684]
-- [`str::len`, `[T]::len` and `str::as_bytes` are now `const` functions.][63770]
-- [The `abs`, `wrapping_abs`, and `overflowing_abs` numeric functions are
-  now `const`.][63786]
+- [The `is_power_of_two` method on unsigned numeric types is now a `const` function.][65092]
 
 Stabilized APIs
 ---------------
-- [`Pin::into_inner`]
-- [`Instant::checked_duration_since`]
-- [`Instant::saturating_duration_since`]
+- [`BTreeMap::get_key_value`]
+- [`HashMap::get_key_value`]
+- [`Option::as_deref_mut`]
+- [`Option::as_deref`]
+- [`Option::flatten`]
+- [`UdpSocket::peer_addr`]
+- [`f32::to_be_bytes`]
+- [`f32::to_le_bytes`]
+- [`f32::to_ne_bytes`]
+- [`f64::to_be_bytes`]
+- [`f64::to_le_bytes`]
+- [`f64::to_ne_bytes`]
+- [`f32::from_be_bytes`]
+- [`f32::from_le_bytes`]
+- [`f32::from_ne_bytes`]
+- [`f64::from_be_bytes`]
+- [`f64::from_le_bytes`]
+- [`f64::from_ne_bytes`]
+- [`mem::take`]
+- [`slice::repeat`]
+- [`todo!`]
 
 Cargo
 -----
-- [You can now publish git dependencies if supplied with a `version`.][cargo/7237]
-- [The `--all` flag has been renamed to `--workspace`.][cargo/7241] Using
-  `--all` is now deprecated.
+- [Cargo will now always display warnings, rather than only on
+  fresh builds.][cargo/7450]
+- [Feature flags (except `--all-features`) passed to a virtual workspace will
+  now produce an error.][cargo/7507] Previously these flags were ignored.
+- [You can now publish `dev-dependencies` without including
+  a `version`.][cargo/7333]
 
 Misc
 ----
-- [You can now pass `-Clinker` to rustdoc to control the linker used
-  for compiling doctests.][63834]
+- [You can now specify the `#[cfg(doctest)]` attribute to include an item only
+  when running documentation tests with `rustdoc`.][63803]
 
 Compatibility Notes
 -------------------
-- [Code that was previously accepted by the old borrow checker, but rejected by
-  the NLL borrow checker is now a hard error in Rust 2018.][63565] This was
-  previously a warning, and will also become a hard error in the Rust 2015
-  edition in the 1.40.0 release.
-- [`rustdoc` now requires `rustc` to be installed and in the same directory to
-  run tests.][63827] This should improve performance when running a large
-  amount of doctests.
-- [The `try!` macro will now issue a deprecation warning.][62672] It is
-  recommended to use the `?` operator instead.
-- [`asinh(-0.0)` now correctly returns `-0.0`.][63698] Previously this
-  returned `0.0`.
-
-[62600]: https://github.com/rust-lang/rust/pull/62600/
-[62672]: https://github.com/rust-lang/rust/pull/62672/
-[63118]: https://github.com/rust-lang/rust/pull/63118/
-[63209]: https://github.com/rust-lang/rust/pull/63209/
-[63402]: https://github.com/rust-lang/rust/pull/63402/
-[63565]: https://github.com/rust-lang/rust/pull/63565/
-[63595]: https://github.com/rust-lang/rust/pull/63595/
-[63684]: https://github.com/rust-lang/rust/pull/63684/
-[63698]: https://github.com/rust-lang/rust/pull/63698/
-[63770]: https://github.com/rust-lang/rust/pull/63770/
-[63786]: https://github.com/rust-lang/rust/pull/63786/
-[63827]: https://github.com/rust-lang/rust/pull/63827/
-[63834]: https://github.com/rust-lang/rust/pull/63834/
-[63927]: https://github.com/rust-lang/rust/pull/63927/
-[63933]: https://github.com/rust-lang/rust/pull/63933/
-[63934]: https://github.com/rust-lang/rust/pull/63934/
-[63938]: https://github.com/rust-lang/rust/pull/63938/
-[63940]: https://github.com/rust-lang/rust/pull/63940/
-[63941]: https://github.com/rust-lang/rust/pull/63941/
-[63945]: https://github.com/rust-lang/rust/pull/63945/
-[64010]: https://github.com/rust-lang/rust/pull/64010/
-[64028]: https://github.com/rust-lang/rust/pull/64028/
-[64334]: https://github.com/rust-lang/rust/pull/64334/
-[cargo/7237]: https://github.com/rust-lang/cargo/pull/7237/
-[cargo/7241]: https://github.com/rust-lang/cargo/pull/7241/
-[cargo/7315]: https://github.com/rust-lang/cargo/pull/7315/
-[`Pin::into_inner`]: https://doc.rust-lang.org/std/pin/struct.Pin.html#method.into_inner
-[`Instant::checked_duration_since`]: https://doc.rust-lang.org/std/time/struct.Instant.html#method.checked_duration_since
-[`Instant::saturating_duration_since`]: https://doc.rust-lang.org/std/time/struct.Instant.html#method.saturating_duration_since
+- [As previously announced, any previous NLL warnings in the 2015 edition are
+  now hard errors.][64221]
+- [The `include!` macro will now warn if it failed to include the
+  entire file.][64284] The `include!` macro unintentionally only includes the
+  first _expression_ in a file, and this can be unintuitive. This will become
+  either a hard error in a future release, or the behavior may be fixed to include all expressions as expected.
+- [Using `#[inline]` on function prototypes and consts now emits a warning under
+  `unused_attribute` lint.][65294] Using `#[inline]` anywhere else inside traits
+  or `extern` blocks now correctly emits a hard error.
+  
+[65294]: https://github.com/rust-lang/rust/pull/65294/
+[66103]: https://github.com/rust-lang/rust/pull/66103/
+[65843]: https://github.com/rust-lang/rust/pull/65843/
+[65188]: https://github.com/rust-lang/rust/pull/65188/
+[65092]: https://github.com/rust-lang/rust/pull/65092/
+[64589]: https://github.com/rust-lang/rust/pull/64589/
+[64639]: https://github.com/rust-lang/rust/pull/64639/
+[64221]: https://github.com/rust-lang/rust/pull/64221/
+[64284]: https://github.com/rust-lang/rust/pull/64284/
+[63931]: https://github.com/rust-lang/rust/pull/63931/
+[64035]: https://github.com/rust-lang/rust/pull/64035/
+[63674]: https://github.com/rust-lang/rust/pull/63674/
+[63803]: https://github.com/rust-lang/rust/pull/63803/
+[cargo/7450]: https://github.com/rust-lang/cargo/pull/7450/
+[cargo/7507]: https://github.com/rust-lang/cargo/pull/7507/
+[cargo/7525]: https://github.com/rust-lang/cargo/pull/7525/
+[cargo/7333]: https://github.com/rust-lang/cargo/pull/7333/
+[(rfc 2008)]: https://rust-lang.github.io/rfcs/2008-non-exhaustive.html
+[`f32::to_be_bytes`]: https://doc.rust-lang.org/std/primitive.f32.html#method.to_be_bytes
+[`f32::to_le_bytes`]: https://doc.rust-lang.org/std/primitive.f32.html#method.to_le_bytes
+[`f32::to_ne_bytes`]: https://doc.rust-lang.org/std/primitive.f32.html#method.to_ne_bytes
+[`f64::to_be_bytes`]: https://doc.rust-lang.org/std/primitive.f64.html#method.to_be_bytes
+[`f64::to_le_bytes`]: https://doc.rust-lang.org/std/primitive.f64.html#method.to_le_bytes
+[`f64::to_ne_bytes`]: https://doc.rust-lang.org/std/primitive.f64.html#method.to_ne_bytes
+[`f32::from_be_bytes`]: https://doc.rust-lang.org/std/primitive.f32.html#method.from_be_bytes
+[`f32::from_le_bytes`]: https://doc.rust-lang.org/std/primitive.f32.html#method.from_le_bytes
+[`f32::from_ne_bytes`]: https://doc.rust-lang.org/std/primitive.f32.html#method.from_ne_bytes
+[`f64::from_be_bytes`]: https://doc.rust-lang.org/std/primitive.f64.html#method.from_be_bytes
+[`f64::from_le_bytes`]: https://doc.rust-lang.org/std/primitive.f64.html#method.from_le_bytes
+[`f64::from_ne_bytes`]: https://doc.rust-lang.org/std/primitive.f64.html#method.from_ne_bytes
+[`option::flatten`]: https://doc.rust-lang.org/std/option/enum.Option.html#method.flatten
+[`option::as_deref`]: https://doc.rust-lang.org/std/option/enum.Option.html#method.as_deref
+[`option::as_deref_mut`]: https://doc.rust-lang.org/std/option/enum.Option.html#method.as_deref_mut
+[`hashmap::get_key_value`]: https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.get_key_value
+[`btreemap::get_key_value`]: https://doc.rust-lang.org/std/collections/struct.BTreeMap.html#method.get_key_value
+[`slice::repeat`]: https://doc.rust-lang.org/std/primitive.slice.html#method.repeat
+[`mem::take`]: https://doc.rust-lang.org/std/mem/fn.take.html
+[`udpsocket::peer_addr`]: https://doc.rust-lang.org/std/net/struct.UdpSocket.html#method.peer_addr
+[`todo!`]: https://doc.rust-lang.org/std/macro.todo.html
+[forge-platform-support]: https://forge.rust-lang.org/platform-support.html
 ]]></releaseNotes>
   </metadata>
 </package>
