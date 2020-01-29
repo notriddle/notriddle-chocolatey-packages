@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('rust', 'rust-ms', 'chars')]
+    [ValidateSet('rust', 'rust-ms', 'ducible', 'chars')]
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string]$Package,
