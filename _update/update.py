@@ -49,8 +49,7 @@ packages = [
         "suffix": "-ms",
         "platform": "pc-windows-msvc",
         "desc": "Visual Studio ABI",
-        "version": version,
-        "release_notes": release_notes
+        "version": version
     },
     {
         "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-gnu"],
@@ -58,8 +57,7 @@ packages = [
         "suffix": "",
         "platform": "pc-windows-gnu",
         "desc": "GNU ABI",
-        "version": version,
-        "release_notes": release_notes
+        "version": version
     }
 ]
 
