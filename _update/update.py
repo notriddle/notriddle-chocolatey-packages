@@ -42,9 +42,6 @@ assert(channel["manifest-version"] == "2")
 
 version = channel["pkg"]["rust"]["version"].split(" ")[0]
 
-with open ("../rust-release-notes.txt", "r") as notes:
-    release_notes = "".join(notes.readlines())
-
 packages = [
     {
         "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-msvc"],
@@ -94,7 +91,7 @@ for package in packages:
     <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
     <summary>A systems programming language that runs blazingly fast, prevents nearly all segfaults, and guarantees thread safety</summary>
     <tags>rust cli portable programming language sdk</tags>
-    <releaseNotes><![CDATA[%(release_notes)s]]></releaseNotes>
+    <releaseNotes>https://github.com/rust-lang/rust/blob/master/RELEASES.md</releaseNotes>
   </metadata>
 </package>""" % package
         nuspec_open.write(nuspec)
@@ -108,15 +105,6 @@ for package in packages:
         install = """\ufeff# Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one.
 
 $ErrorActionPreference = 'Stop';
-
-# Uninstall old versions of Rust.
-if (Test-ProcessAdminRights) {
-  Get-WmiObject -Class Win32_Product | Where-Object {
-    ($_.Vendor -eq "The Rust Project Developers") -And ($_.Name -match "Rust")
-  } | foreach {
-    $_.Uninstall()
-  }
-}
 
 $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName

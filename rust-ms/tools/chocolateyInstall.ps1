@@ -2,38 +2,29 @@
 
 $ErrorActionPreference = 'Stop';
 
-# Uninstall old versions of Rust.
-if (Test-ProcessAdminRights) {
-  Get-WmiObject -Class Win32_Product | Where-Object {
-    ($_.Vendor -eq "The Rust Project Developers") -And ($_.Name -match "Rust")
-  } | foreach {
-    $_.Uninstall()
-  }
-}
-
 $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$url         = "https://static.rust-lang.org/dist/2020-02-27/rust-1.41.1-i686-pc-windows-msvc.tar.gz"
-$url64       = "https://static.rust-lang.org/dist/2020-02-27/rust-1.41.1-x86_64-pc-windows-msvc.tar.gz"
+$url         = "https://static.rust-lang.org/dist/2020-04-23/rust-1.43.0-i686-pc-windows-msvc.tar.gz"
+$url64       = "https://static.rust-lang.org/dist/2020-04-23/rust-1.43.0-x86_64-pc-windows-msvc.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $url
-    checksum       = "90bacf40f0d0435d305015ceaf70d82fb6f554b390ca2c144a25e5eea9d6c3c9"
+    checksum       = "7adee4fd1e05d9737dd84fd97659f63451857f9482c05be93525ddf000f1cfdf"
     checksumType   = "sha256"
     url64bit       = $url64
-    checksum64     = "6015d62e1971d5ea0c1022f8c3ab013f1e863858d7efb9e235fc361f51fbb688"
+    checksum64     = "78dea49969addb3ef7a3a3816482534828a5140c866a828be69ccfeb44972a3b"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2020-02-27/rust-src-1.41.1.tar.gz"
-    checksum       = "fefed77800b250f43ce0e0660eac02ea7501450ebee943469fd1aec87d27b8a6"
+    url            = "https://static.rust-lang.org/dist/2020-04-23/rust-src-1.43.0.tar.gz"
+    checksum       = "7999fad1e60609f76ebe589cab48451e35ecd54d5336bf70dfb0eb57c78e8bb7"
     checksumType   = "sha256"
 }
 

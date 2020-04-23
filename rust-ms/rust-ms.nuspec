@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>rust-ms</id>
-    <version>1.41.1</version>
+    <version>1.43.0</version>
     <title>Rust (Visual Studio ABI)</title>
     <authors>Mozilla</authors>
     <owners>Mike Chaliy, Francisco Gómez, Michael Howell</owners>
@@ -17,14 +17,6 @@
     <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
     <summary>A systems programming language that runs blazingly fast, prevents nearly all segfaults, and guarantees thread safety</summary>
     <tags>rust cli portable programming language sdk</tags>
-    <releaseNotes><![CDATA[Version 1.41.1 (2020-02-27)
-===========================
-
-* [Always check types of static items][69145]
-* [Always check lifetime bounds of `Copy` impls][69145]
-* [Fix miscompilation in callers of `Layout::repeat`][69225]
-
-[69225]: https://github.com/rust-lang/rust/issues/69225
-[69145]: https://github.com/rust-lang/rust/pull/69145]]></releaseNotes>
+    <releaseNotes><![CDATA[https://github.com/rust-lang/rust/blob/master/RELEASES.md]]></releaseNotes>
   </metadata>
 </package>
