@@ -6,25 +6,25 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$url         = "https://static.rust-lang.org/dist/2020-04-23/rust-1.43.0-i686-pc-windows-msvc.tar.gz"
-$url64       = "https://static.rust-lang.org/dist/2020-04-23/rust-1.43.0-x86_64-pc-windows-msvc.tar.gz"
+$url         = "https://static.rust-lang.org/dist/2020-06-18/rust-1.44.1-i686-pc-windows-msvc.tar.gz"
+$url64       = "https://static.rust-lang.org/dist/2020-06-18/rust-1.44.1-x86_64-pc-windows-msvc.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $url
-    checksum       = "7adee4fd1e05d9737dd84fd97659f63451857f9482c05be93525ddf000f1cfdf"
+    checksum       = "a4a30535dc680e0ed56058ec1b2a724cb9b077d46976fe061ffe9503eb453d99"
     checksumType   = "sha256"
     url64bit       = $url64
-    checksum64     = "78dea49969addb3ef7a3a3816482534828a5140c866a828be69ccfeb44972a3b"
+    checksum64     = "ce3888d5b631d1cc2aa1f7eda473cc24c7d1bc1900acdde01f520e11a3b49172"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2020-04-23/rust-src-1.43.0.tar.gz"
-    checksum       = "7999fad1e60609f76ebe589cab48451e35ecd54d5336bf70dfb0eb57c78e8bb7"
+    url            = "https://static.rust-lang.org/dist/2020-06-18/rust-src-1.44.1.tar.gz"
+    checksum       = "6eba1d52c8ffea9506b52e1b9a8ac2eca8d723063ade8b2ab803b3b6ba71afd5"
     checksumType   = "sha256"
 }
 
