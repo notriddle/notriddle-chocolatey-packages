@@ -6,18 +6,24 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$url         = "https://static.rust-lang.org/dist/2020-11-19/rust-1.48.0-i686-pc-windows-gnu.tar.gz"
-$url64       = "https://static.rust-lang.org/dist/2020-11-19/rust-1.48.0-x86_64-pc-windows-gnu.tar.gz"
+$rustcUrl = "https://static.rust-lang.org/dist/2020-11-19/rustc-1.48.0-i686-pc-windows-gnu.tar.gz"
+$rustcUrl64 = "https://static.rust-lang.org/dist/2020-11-19/rustc-1.48.0-x86_64-pc-windows-gnu.tar.gz"
+
+$cargoUrl = "https://static.rust-lang.org/dist/2020-11-19/cargo-1.48.0-i686-pc-windows-gnu.tar.gz"
+$cargoUrl64 = "https://static.rust-lang.org/dist/2020-11-19/cargo-1.48.0-x86_64-pc-windows-gnu.tar.gz"
+
+$stdUrl = "https://static.rust-lang.org/dist/2020-11-19/rust-std-1.48.0-i686-pc-windows-gnu.tar.gz"
+$stdUrl64 = "https://static.rust-lang.org/dist/2020-11-19/rust-std-1.48.0-x86_64-pc-windows-gnu.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = $url
-    checksum       = "46303346628c29d3aea972c64cd58dda28d56cbe341812d54ec386cb837f1a9c
+    url            = $rustcUrl
+    checksum       = "16f707e06dec35d9724798f26543ecc186acd5751dd908a8dad68f357291c0e0
 "
     checksumType   = "sha256"
-    url64bit       = $url64
-    checksum64     = "c3c73b017822bf07e336287699c5480a738ad36011e99400bafbee808c75388d
+    url64bit       = $rustcUrl64
+    checksum64     = "4a66b17fc7984b73fb74ad30276ad9f9ad8a0da8ecb1074da8cb1db6adc98bb8
 "
     checksumType64 = "sha256"
 }
@@ -31,6 +37,32 @@ $packageSrcArgs = @{
     checksumType   = "sha256"
 }
 
+$packageCargoArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = $cargoUrl
+    checksum       = "57f457d937495aa6736bdddd319c27bb9f05473890785e2b7021dad8cb163dd2
+"
+    checksumType   = "sha256"
+    url64bit       = $cargoUrl64
+    checksum64     = "51535a1b4ec28a2d9960f4b04490a6b27a0ee6758782e5ab197199738227a66e
+"
+    checksumType64 = "sha256"
+}
+
+$packageStdArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = $stdUrl
+    checksum       = "cd9666419a65b8f51707cbbea47e687f2182b2c272e21a3474db5b83d04d9266
+"
+    checksumType   = "sha256"
+    url64bit       = $stdUrl64
+    checksum64     = "d000cf4425bbb7210e5c57e973d805222cedca86477ce7463b75647551209343
+"
+    checksumType64 = "sha256"
+}
+
 # Updates require us to get rid of the existing installation
 # https://chocolatey.org/packages/rust#comment-4632965834
 if (Test-Path $toolsDir\bin) { rm -Recurse -Force $toolsDir\bin }
@@ -42,9 +74,13 @@ if (Test-Path $toolsDir\share) { rm -Recurse -Force $toolsDir\share }
 # so it turns the tar.gz files that Rust distributes into bar tar files.
 # Useless.
 Install-ChocolateyZipPackage @packageArgs
-Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-$version-i686-pc-windows-gnu.tar -FileFullPath64 $toolsDir/rust-$version-x86_64-pc-windows-gnu.tar -Destination $toolsDir
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rustc-$version-i686-pc-windows-gnu.tar -FileFullPath64 $toolsDir/rustc-$version-x86_64-pc-windows-gnu.tar -Destination $toolsDir
 Install-ChocolateyZipPackage @packageSrcArgs
 Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-src-$version.tar -Destination $toolsDir
+Install-ChocolateyZipPackage @packageCargoArgs
+Get-ChocolateyUnzip -FileFullPath $toolsDir/cargo-$version-i686-pc-windows-gnu.tar -FileFullPath64 $toolsDir/cargo-$version-x86_64-pc-windows-gnu.tar -Destination $toolsDir
+Install-ChocolateyZipPackage @packageStdArgs
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-std-$version-i686-pc-windows-gnu.tar -FileFullPath64 $toolsDir/rust-std-$version-x86_64-pc-windows-gnu.tar -Destination $toolsDir
 # This is basically what install.sh does, though with less customizability,
 # because we delegate to Chocolatey for things like uninstalling and deciding where $toolsDir is.
 function Install-RustPackage([string]$Directory) {
@@ -71,11 +107,17 @@ function Install-RustPackage([string]$Directory) {
   }
   cd $toolsDir
 }
-rm -recurse -force $toolsDir/rust-$version-*.tar
+rm -recurse -force $toolsDir/rustc-$version-*.tar
 rm -recurse -force $toolsDir/rust-src-$version.tar
-dir $toolsDir/rust-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+rm -recurse -force $toolsDir/rust-std-$version-*.tar
+rm -recurse -force $toolsDir/cargo-$version-*.tar
+dir $toolsDir/rustc-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+dir $toolsDir/cargo-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+dir $toolsDir/rust-std-$version-* | foreach { Install-RustPackage (join-path $_ '') }
 Install-RustPackage $toolsDir/rust-src-$version
-rm -recurse -force $toolsDir/rust-$version-*
+rm -recurse -force $toolsDir/rustc-$version-*
+rm -recurse -force $toolsDir/cargo-$version-*
+rm -recurse -force $toolsDir/rust-std-$version-*
 rm -recurse -force $toolsDir/rust-src-$version
 # Mark gcc.exe, and its relatives, as not-for-shimming.
 # https://chocolatey.org/packages/rust#comment-4690124900

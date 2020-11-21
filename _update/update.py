@@ -42,18 +42,28 @@ assert(channel["manifest-version"] == "2")
 
 version = channel["pkg"]["rust"]["version"].split(" ")[0]
 
+# Base
+
 packages = [
     {
-        "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-msvc"],
-        "x86_64": channel["pkg"]["rust"]["target"]["x86_64-pc-windows-msvc"],
+        "rustc32": channel["pkg"]["rustc"]["target"]["i686-pc-windows-msvc"],
+        "rustc64": channel["pkg"]["rustc"]["target"]["x86_64-pc-windows-msvc"],
+        "cargo32": channel["pkg"]["cargo"]["target"]["i686-pc-windows-msvc"],
+        "cargo64": channel["pkg"]["cargo"]["target"]["x86_64-pc-windows-msvc"],
+        "std32": channel["pkg"]["rust-std"]["target"]["i686-pc-windows-msvc"],
+        "std64": channel["pkg"]["rust-std"]["target"]["x86_64-pc-windows-msvc"],
         "suffix": "-ms",
         "platform": "pc-windows-msvc",
         "desc": "Visual Studio ABI",
         "version": version
     },
     {
-        "i686": channel["pkg"]["rust"]["target"]["i686-pc-windows-gnu"],
-        "x86_64": channel["pkg"]["rust"]["target"]["x86_64-pc-windows-gnu"],
+        "rustc32": channel["pkg"]["rustc"]["target"]["i686-pc-windows-gnu"],
+        "rustc64": channel["pkg"]["rustc"]["target"]["x86_64-pc-windows-gnu"],
+        "cargo32": channel["pkg"]["cargo"]["target"]["i686-pc-windows-gnu"],
+        "cargo64": channel["pkg"]["cargo"]["target"]["x86_64-pc-windows-gnu"],
+        "std32": channel["pkg"]["rust-std"]["target"]["i686-pc-windows-gnu"],
+        "std64": channel["pkg"]["rust-std"]["target"]["x86_64-pc-windows-gnu"],
         "suffix": "",
         "platform": "pc-windows-gnu",
         "desc": "GNU ABI",
@@ -93,10 +103,18 @@ for package in packages:
   </metadata>
 </package>""" % package
         nuspec_open.write(nuspec)
-    package32_url = package["i686"]["url"]
-    package32_sha256 = requests.get(package32_url + ".sha256").text.split(" ")[0]
-    package64_url = package["x86_64"]["url"]
-    package64_sha256 = requests.get(package64_url + ".sha256").text.split(" ")[0]
+    rustc32_url = package["rustc32"]["url"]
+    rustc32_sha256 = requests.get(rustc32_url + ".sha256").text.split(" ")[0]
+    rustc64_url = package["rustc64"]["url"]
+    rustc64_sha256 = requests.get(rustc64_url + ".sha256").text.split(" ")[0]
+    cargo32_url = package["cargo32"]["url"]
+    cargo32_sha256 = requests.get(cargo32_url + ".sha256").text.split(" ")[0]
+    cargo64_url = package["cargo64"]["url"]
+    cargo64_sha256 = requests.get(cargo64_url + ".sha256").text.split(" ")[0]
+    std32_url = package["std32"]["url"]
+    std32_sha256 = requests.get(std32_url + ".sha256").text.split(" ")[0]
+    std64_url = package["std64"]["url"]
+    std64_sha256 = requests.get(std64_url + ".sha256").text.split(" ")[0]
     src_url = channel["pkg"]["rust-src"]["target"]["*"]["url"]
     src_sha256 = requests.get(src_url + ".sha256").text.split(" ")[0]
     with codecs.open(package_path + "tools/chocolateyInstall.ps1", 'w', 'utf-8') as install_open:
@@ -108,17 +126,23 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$url         = "%(url)s"
-$url64       = "%(url64)s"
+$rustcUrl = "%(rustc_url)s"
+$rustcUrl64 = "%(rustc_url64)s"
+
+$cargoUrl = "%(cargo_url)s"
+$cargoUrl64 = "%(cargo_url64)s"
+
+$stdUrl = "%(std_url)s"
+$stdUrl64 = "%(std_url64)s"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = $url
-    checksum       = "%(sha256)s"
+    url            = $rustcUrl
+    checksum       = "%(rustc_sha256)s"
     checksumType   = "sha256"
-    url64bit       = $url64
-    checksum64     = "%(sha256_64)s"
+    url64bit       = $rustcUrl64
+    checksum64     = "%(rustc_sha256_64)s"
     checksumType64 = "sha256"
 }
 
@@ -128,6 +152,28 @@ $packageSrcArgs = @{
     url            = "%(src_url)s"
     checksum       = "%(src_sha256)s"
     checksumType   = "sha256"
+}
+
+$packageCargoArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = $cargoUrl
+    checksum       = "%(cargo_sha256)s"
+    checksumType   = "sha256"
+    url64bit       = $cargoUrl64
+    checksum64     = "%(cargo_sha256_64)s"
+    checksumType64 = "sha256"
+}
+
+$packageStdArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = $stdUrl
+    checksum       = "%(std_sha256)s"
+    checksumType   = "sha256"
+    url64bit       = $stdUrl64
+    checksum64     = "%(std_sha256_64)s"
+    checksumType64 = "sha256"
 }
 
 # Updates require us to get rid of the existing installation
@@ -141,9 +187,13 @@ if (Test-Path $toolsDir\\share) { rm -Recurse -Force $toolsDir\\share }
 # so it turns the tar.gz files that Rust distributes into bar tar files.
 # Useless.
 Install-ChocolateyZipPackage @packageArgs
-Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-$version-i686-%(platform)s.tar -FileFullPath64 $toolsDir/rust-$version-x86_64-%(platform)s.tar -Destination $toolsDir
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rustc-$version-i686-%(platform)s.tar -FileFullPath64 $toolsDir/rustc-$version-x86_64-%(platform)s.tar -Destination $toolsDir
 Install-ChocolateyZipPackage @packageSrcArgs
 Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-src-$version.tar -Destination $toolsDir
+Install-ChocolateyZipPackage @packageCargoArgs
+Get-ChocolateyUnzip -FileFullPath $toolsDir/cargo-$version-i686-%(platform)s.tar -FileFullPath64 $toolsDir/cargo-$version-x86_64-%(platform)s.tar -Destination $toolsDir
+Install-ChocolateyZipPackage @packageStdArgs
+Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-std-$version-i686-%(platform)s.tar -FileFullPath64 $toolsDir/rust-std-$version-x86_64-%(platform)s.tar -Destination $toolsDir
 # This is basically what install.sh does, though with less customizability,
 # because we delegate to Chocolatey for things like uninstalling and deciding where $toolsDir is.
 function Install-RustPackage([string]$Directory) {
@@ -170,11 +220,17 @@ function Install-RustPackage([string]$Directory) {
   }
   cd $toolsDir
 }
-rm -recurse -force $toolsDir/rust-$version-*.tar
+rm -recurse -force $toolsDir/rustc-$version-*.tar
 rm -recurse -force $toolsDir/rust-src-$version.tar
-dir $toolsDir/rust-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+rm -recurse -force $toolsDir/rust-std-$version-*.tar
+rm -recurse -force $toolsDir/cargo-$version-*.tar
+dir $toolsDir/rustc-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+dir $toolsDir/cargo-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+dir $toolsDir/rust-std-$version-* | foreach { Install-RustPackage (join-path $_ '') }
 Install-RustPackage $toolsDir/rust-src-$version
-rm -recurse -force $toolsDir/rust-$version-*
+rm -recurse -force $toolsDir/rustc-$version-*
+rm -recurse -force $toolsDir/cargo-$version-*
+rm -recurse -force $toolsDir/rust-std-$version-*
 rm -recurse -force $toolsDir/rust-src-$version
 # Mark gcc.exe, and its relatives, as not-for-shimming.
 # https://chocolatey.org/packages/rust#comment-4690124900
@@ -182,5 +238,11 @@ $files = Get-ChildItem $toolsDir\\lib\\rustlib\\ -include '*.exe' -recurse -name
 foreach ($file in $files) {
   New-Item "$toolsDir\\lib\\rustlib\\$file.ignore" -type file -force | Out-Null
 }
-""" % {"url": package32_url, "sha256": package32_sha256, "url64": package64_url, "sha256_64": package64_sha256, "src_url": src_url, "src_sha256": src_sha256, "platform": package["platform"]}
+""" % {
+    "rustc_url": rustc32_url, "rustc_sha256": rustc32_sha256, "rustc_url64": rustc64_url, "rustc_sha256_64": rustc64_sha256,
+    "cargo_url": cargo32_url, "cargo_sha256": cargo32_sha256, "cargo_url64": cargo64_url, "cargo_sha256_64": cargo64_sha256,
+    "std_url": std32_url, "std_sha256": std32_sha256, "std_url64": std64_url, "std_sha256_64": std64_sha256,
+    "src_url": src_url, "src_sha256": src_sha256, "platform": package["platform"]}
         install_open.write(install)
+
+# Extras
