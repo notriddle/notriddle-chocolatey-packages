@@ -63,6 +63,19 @@ $packageStdArgs = @{
     checksumType64 = "sha256"
 }
 
+$packageMingwArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = "https://static.rust-lang.org/dist/2020-11-19/rust-mingw-1.48.0-i686-pc-windows-gnu.tar.gz"
+    checksum       = "77be767f332ea873a4e975aba201ebe1baa8a0f3c09d90a5ec40b22a04332181
+"
+    checksumType   = "sha256"
+    url64bit       = "https://static.rust-lang.org/dist/2020-11-19/rust-mingw-1.48.0-x86_64-pc-windows-gnu.tar.gz"
+    checksum64     = "3aa9e206099906fa0b8240e1011abe8b5150fe42689694d7a7d974a7c7ebc000
+"
+    checksumType64 = "sha256"
+}
+
 # Updates require us to get rid of the existing installation
 # https://chocolatey.org/packages/rust#comment-4632965834
 if (Test-Path $toolsDir\bin) { rm -Recurse -Force $toolsDir\bin }
@@ -119,6 +132,13 @@ rm -recurse -force $toolsDir/rustc-$version-*
 rm -recurse -force $toolsDir/cargo-$version-*
 rm -recurse -force $toolsDir/rust-std-$version-*
 rm -recurse -force $toolsDir/rust-src-$version
+if ("https://static.rust-lang.org/dist/2020-11-19/rust-mingw-1.48.0-i686-pc-windows-gnu.tar.gz" -ne "") {
+  Install-ChocolateyZipPackage @packageMingwArgs
+  Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-mingw-$version-i686-pc-windows-gnu.tar -FileFullPath64 $toolsDir/rust-mingw-$version-x86_64-pc-windows-gnu.tar -Destination $toolsDir
+  rm -recurse -force $toolsDir/rust-mingw-$version-*.tar
+  dir $toolsDir/rust-mingw-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+  rm -recurse -force $toolsDir/rust-mingw-$version-*
+}
 # Mark gcc.exe, and its relatives, as not-for-shimming.
 # https://chocolatey.org/packages/rust#comment-4690124900
 $files = Get-ChildItem $toolsDir\lib\rustlib\ -include '*.exe' -recurse -name

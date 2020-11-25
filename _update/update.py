@@ -42,8 +42,6 @@ assert(channel["manifest-version"] == "2")
 
 version = channel["pkg"]["rust"]["version"].split(" ")[0]
 
-# Base
-
 packages = [
     {
         "rustc32": channel["pkg"]["rustc"]["target"]["i686-pc-windows-msvc"],
@@ -117,6 +115,16 @@ for package in packages:
     std64_sha256 = requests.get(std64_url + ".sha256").text.split(" ")[0]
     src_url = channel["pkg"]["rust-src"]["target"]["*"]["url"]
     src_sha256 = requests.get(src_url + ".sha256").text.split(" ")[0]
+    if package["platform"] == "pc-windows-gnu":
+        mingw32_url = channel["pkg"]["rust-mingw"]["target"]["i686-pc-windows-gnu"]["url"]
+        mingw32_sha256 = requests.get(mingw32_url + ".sha256").text.split(" ")[0]
+        mingw64_url = channel["pkg"]["rust-mingw"]["target"]["x86_64-pc-windows-gnu"]["url"]
+        mingw64_sha256 = requests.get(mingw64_url + ".sha256").text.split(" ")[0]
+    else:
+        mingw32_url = ""
+        mingw32_sha256 = ""
+        mingw64_url = ""
+        mingw64_sha256 = ""
     with codecs.open(package_path + "tools/chocolateyInstall.ps1", 'w', 'utf-8') as install_open:
         install = """\ufeff# Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one.
 
@@ -176,6 +184,17 @@ $packageStdArgs = @{
     checksumType64 = "sha256"
 }
 
+$packageMingwArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = "%(mingw32_url)s"
+    checksum       = "%(mingw32_sha256)s"
+    checksumType   = "sha256"
+    url64bit       = "%(mingw64_url)s"
+    checksum64     = "%(mingw64_sha256)s"
+    checksumType64 = "sha256"
+}
+
 # Updates require us to get rid of the existing installation
 # https://chocolatey.org/packages/rust#comment-4632965834
 if (Test-Path $toolsDir\\bin) { rm -Recurse -Force $toolsDir\\bin }
@@ -232,6 +251,13 @@ rm -recurse -force $toolsDir/rustc-$version-*
 rm -recurse -force $toolsDir/cargo-$version-*
 rm -recurse -force $toolsDir/rust-std-$version-*
 rm -recurse -force $toolsDir/rust-src-$version
+if ("%(mingw32_url)s" -ne "") {
+  Install-ChocolateyZipPackage @packageMingwArgs
+  Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-mingw-$version-i686-%(platform)s.tar -FileFullPath64 $toolsDir/rust-mingw-$version-x86_64-%(platform)s.tar -Destination $toolsDir
+  rm -recurse -force $toolsDir/rust-mingw-$version-*.tar
+  dir $toolsDir/rust-mingw-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+  rm -recurse -force $toolsDir/rust-mingw-$version-*
+}
 # Mark gcc.exe, and its relatives, as not-for-shimming.
 # https://chocolatey.org/packages/rust#comment-4690124900
 $files = Get-ChildItem $toolsDir\\lib\\rustlib\\ -include '*.exe' -recurse -name
@@ -242,7 +268,6 @@ foreach ($file in $files) {
     "rustc_url": rustc32_url, "rustc_sha256": rustc32_sha256, "rustc_url64": rustc64_url, "rustc_sha256_64": rustc64_sha256,
     "cargo_url": cargo32_url, "cargo_sha256": cargo32_sha256, "cargo_url64": cargo64_url, "cargo_sha256_64": cargo64_sha256,
     "std_url": std32_url, "std_sha256": std32_sha256, "std_url64": std64_url, "std_sha256_64": std64_sha256,
+    "mingw32_url": mingw32_url, "mingw32_sha256": mingw32_sha256, "mingw64_url": mingw64_url, "mingw64_sha256": mingw64_sha256,
     "src_url": src_url, "src_sha256": src_sha256, "platform": package["platform"]}
         install_open.write(install)
-
-# Extras

@@ -63,6 +63,17 @@ $packageStdArgs = @{
     checksumType64 = "sha256"
 }
 
+$packageMingwArgs = @{
+    packageName    = $packageName
+    unzipLocation  = $toolsDir
+    url            = ""
+    checksum       = ""
+    checksumType   = "sha256"
+    url64bit       = ""
+    checksum64     = ""
+    checksumType64 = "sha256"
+}
+
 # Updates require us to get rid of the existing installation
 # https://chocolatey.org/packages/rust#comment-4632965834
 if (Test-Path $toolsDir\bin) { rm -Recurse -Force $toolsDir\bin }
@@ -119,6 +130,13 @@ rm -recurse -force $toolsDir/rustc-$version-*
 rm -recurse -force $toolsDir/cargo-$version-*
 rm -recurse -force $toolsDir/rust-std-$version-*
 rm -recurse -force $toolsDir/rust-src-$version
+if ("" -ne "") {
+  Install-ChocolateyZipPackage @packageMingwArgs
+  Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-mingw-$version-i686-pc-windows-msvc.tar -FileFullPath64 $toolsDir/rust-mingw-$version-x86_64-pc-windows-msvc.tar -Destination $toolsDir
+  rm -recurse -force $toolsDir/rust-mingw-$version-*.tar
+  dir $toolsDir/rust-mingw-$version-* | foreach { Install-RustPackage (join-path $_ '') }
+  rm -recurse -force $toolsDir/rust-mingw-$version-*
+}
 # Mark gcc.exe, and its relatives, as not-for-shimming.
 # https://chocolatey.org/packages/rust#comment-4690124900
 $files = Get-ChildItem $toolsDir\lib\rustlib\ -include '*.exe' -recurse -name
