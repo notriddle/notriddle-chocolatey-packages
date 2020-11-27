@@ -2,7 +2,7 @@
 
 $ErrorActionPreference = 'Stop';
 
-$version     = $env:chocolateyPackageVersion
+$version     = "1.48.0"
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
