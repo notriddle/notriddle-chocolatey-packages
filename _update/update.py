@@ -220,6 +220,10 @@ function Install-RustPackage([string]$Directory) {
   cat components | foreach {
     $c = $_
     cat $Directory/$c/manifest.in | foreach {
+      # https://community.chocolatey.org/packages/rust#comment-5339041282
+      if ($_.Contains("bash_completion.d")) {
+        continue
+      }
       if ($_.StartsWith("file:")) {
         $f = $_.SubString(5)
         $d = (split-path -parent $f)

@@ -2,35 +2,35 @@
 
 $ErrorActionPreference = 'Stop';
 
-$version     = $env:chocolateyPackageVersion
+$version     = "1.51.0"
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$rustcUrl = "https://static.rust-lang.org/dist/2021-02-11/rustc-1.50.0-i686-pc-windows-msvc.tar.gz"
-$rustcUrl64 = "https://static.rust-lang.org/dist/2021-02-11/rustc-1.50.0-x86_64-pc-windows-msvc.tar.gz"
+$rustcUrl = "https://static.rust-lang.org/dist/2021-03-25/rustc-1.51.0-i686-pc-windows-msvc.tar.gz"
+$rustcUrl64 = "https://static.rust-lang.org/dist/2021-03-25/rustc-1.51.0-x86_64-pc-windows-msvc.tar.gz"
 
-$cargoUrl = "https://static.rust-lang.org/dist/2021-02-11/cargo-1.50.0-i686-pc-windows-msvc.tar.gz"
-$cargoUrl64 = "https://static.rust-lang.org/dist/2021-02-11/cargo-1.50.0-x86_64-pc-windows-msvc.tar.gz"
+$cargoUrl = "https://static.rust-lang.org/dist/2021-03-25/cargo-1.51.0-i686-pc-windows-msvc.tar.gz"
+$cargoUrl64 = "https://static.rust-lang.org/dist/2021-03-25/cargo-1.51.0-x86_64-pc-windows-msvc.tar.gz"
 
-$stdUrl = "https://static.rust-lang.org/dist/2021-02-11/rust-std-1.50.0-i686-pc-windows-msvc.tar.gz"
-$stdUrl64 = "https://static.rust-lang.org/dist/2021-02-11/rust-std-1.50.0-x86_64-pc-windows-msvc.tar.gz"
+$stdUrl = "https://static.rust-lang.org/dist/2021-03-25/rust-std-1.51.0-i686-pc-windows-msvc.tar.gz"
+$stdUrl64 = "https://static.rust-lang.org/dist/2021-03-25/rust-std-1.51.0-x86_64-pc-windows-msvc.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $rustcUrl
-    checksum       = "271d7ae615ea93d67f83e21144011f9f3274069da80df4115ce94df313a8055d"
+    checksum       = "45d232ceb08e33aba53f1f816a984c3f31a1acb820ae1e2f6b0009f2ed06e5e6"
     checksumType   = "sha256"
     url64bit       = $rustcUrl64
-    checksum64     = "d7f7607c9cd3e137a335904e1186345f4328a971588ee8a54838e32a35a38e3a"
+    checksum64     = "a6fee78393f3ee78bc81b5437122f7fd220d8d6686c9cfd41848bd699c9758f4"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2021-02-11/rust-src-1.50.0.tar.gz"
-    checksum       = "678e140e88656f19a49aa802eb6e1ea117a520c6f3eb0da265a7dc6e0c012a9c"
+    url            = "https://static.rust-lang.org/dist/2021-03-25/rust-src-1.51.0.tar.gz"
+    checksum       = "18904ca04c5bc09fa1a88d32391c611bc60bc3a739551496cad0829e34301563"
     checksumType   = "sha256"
 }
 
@@ -38,10 +38,10 @@ $packageCargoArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $cargoUrl
-    checksum       = "be85c24b19ba0a20ef21740d6c399c2f30401af597fa42ab8b9b20ebbb98d7ab"
+    checksum       = "ad394c4c9f602c711d4e7a7d50518e3f14c58e100c0083b8062ab023a7f2df41"
     checksumType   = "sha256"
     url64bit       = $cargoUrl64
-    checksum64     = "dbd97ac5645668149d4a32b0b5f6274934d95f8b6d6e6926b7de13ee869aeedb"
+    checksum64     = "ee232ab24aa57f3c57218a5886af673725ecff38ad58e8d75257d4fd0c86b148"
     checksumType64 = "sha256"
 }
 
@@ -49,10 +49,10 @@ $packageStdArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $stdUrl
-    checksum       = "6548ad251fef683c3f5a1d434d2caa57ce5bb7c6ffc415cc5b64806182e75cd0"
+    checksum       = "a03f0dbb2092b61286b57b9026453f2c57432a019f6ee2020ef6740cc0983fe4"
     checksumType   = "sha256"
     url64bit       = $stdUrl64
-    checksum64     = "48e562e1de58bd45aa0d8a95173e159c588ee76b0164affdc0140c928b1994c1"
+    checksum64     = "0e9300e21b61ec1adde0b48772a76f1c881015cf1e7885b641dcfa1dd8289e55"
     checksumType64 = "sha256"
 }
 
@@ -92,6 +92,10 @@ function Install-RustPackage([string]$Directory) {
   cat components | foreach {
     $c = $_
     cat $Directory/$c/manifest.in | foreach {
+      # https://community.chocolatey.org/packages/rust#comment-5339041282
+      if ($_.Contains("bash_completion.d")) {
+        continue
+      }
       if ($_.StartsWith("file:")) {
         $f = $_.SubString(5)
         $d = (split-path -parent $f)
