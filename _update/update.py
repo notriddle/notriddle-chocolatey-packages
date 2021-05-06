@@ -220,15 +220,11 @@ function Install-RustPackage([string]$Directory) {
   cat components | foreach {
     $c = $_
     cat $Directory/$c/manifest.in | foreach {
-      # https://community.chocolatey.org/packages/rust#comment-5339041282
-      if ($_.Contains("bash_completion.d")) {
-        continue
-      }
       if ($_.StartsWith("file:")) {
         $f = $_.SubString(5)
         $d = (split-path -parent $f)
         if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
-        mv $Directory/$c/$f $toolsDir/$f
+        mv -force $Directory/$c/$f $toolsDir/$f
       }
       # The assumption is that a manifest with a `dir:` directive is the sole provider of that directory,
       # unlike other rust components, where we're expected to merge the directories together.
@@ -237,7 +233,7 @@ function Install-RustPackage([string]$Directory) {
         $f = $_.SubString(4)
         $d = (split-path -parent $f)
         if (!(test-path $toolsDir/$d)) { mkdir $toolsDir/$d }
-        mv $Directory/$c/$f $toolsDir/$f
+        mv -force $Directory/$c/$f $toolsDir/$f
       }
     }
   }
