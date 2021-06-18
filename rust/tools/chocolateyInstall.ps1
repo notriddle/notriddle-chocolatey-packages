@@ -6,31 +6,31 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$rustcUrl = "https://static.rust-lang.org/dist/2021-05-10/rustc-1.52.1-i686-pc-windows-gnu.tar.gz"
-$rustcUrl64 = "https://static.rust-lang.org/dist/2021-05-10/rustc-1.52.1-x86_64-pc-windows-gnu.tar.gz"
+$rustcUrl = "https://static.rust-lang.org/dist/2021-06-17/rustc-1.53.0-i686-pc-windows-gnu.tar.gz"
+$rustcUrl64 = "https://static.rust-lang.org/dist/2021-06-17/rustc-1.53.0-x86_64-pc-windows-gnu.tar.gz"
 
-$cargoUrl = "https://static.rust-lang.org/dist/2021-05-10/cargo-1.52.1-i686-pc-windows-gnu.tar.gz"
-$cargoUrl64 = "https://static.rust-lang.org/dist/2021-05-10/cargo-1.52.1-x86_64-pc-windows-gnu.tar.gz"
+$cargoUrl = "https://static.rust-lang.org/dist/2021-06-17/cargo-1.53.0-i686-pc-windows-gnu.tar.gz"
+$cargoUrl64 = "https://static.rust-lang.org/dist/2021-06-17/cargo-1.53.0-x86_64-pc-windows-gnu.tar.gz"
 
-$stdUrl = "https://static.rust-lang.org/dist/2021-05-10/rust-std-1.52.1-i686-pc-windows-gnu.tar.gz"
-$stdUrl64 = "https://static.rust-lang.org/dist/2021-05-10/rust-std-1.52.1-x86_64-pc-windows-gnu.tar.gz"
+$stdUrl = "https://static.rust-lang.org/dist/2021-06-17/rust-std-1.53.0-i686-pc-windows-gnu.tar.gz"
+$stdUrl64 = "https://static.rust-lang.org/dist/2021-06-17/rust-std-1.53.0-x86_64-pc-windows-gnu.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $rustcUrl
-    checksum       = "45cb2e22d193b3ca26808009b81d07942a02bcf60fcc2e55db159c356b1fe77a"
+    checksum       = "1e74c41b3ec13face45be99247c2f1e4ebd62b077481944de9246b5ee8290246"
     checksumType   = "sha256"
     url64bit       = $rustcUrl64
-    checksum64     = "5dd155eeb4dc60fcd7542ddc1adcfbad1d759a9b32ea1fefa59cf26cd9d511ce"
+    checksum64     = "faea1ab5e19d6156053d52c2f732b6e7bd476565f4bc71619dcec1987993145f"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2021-05-10/rust-src-1.52.1.tar.gz"
-    checksum       = "34fb417e94aadbace368e934e1f079dd09f2423ccd6cc0cc519cdd55ef3fa8bf"
+    url            = "https://static.rust-lang.org/dist/2021-06-17/rust-src-1.53.0.tar.gz"
+    checksum       = "26b1464bd313ae99de27a162ca96b4fb321e4414448ea8ce8abd715ef8c7ba2b"
     checksumType   = "sha256"
 }
 
@@ -38,10 +38,10 @@ $packageCargoArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $cargoUrl
-    checksum       = "db0ee581622256ecd2993380869172b87567e1c8422b8cf7f277aadad260bcab"
+    checksum       = "5b92fa86583662b9433e4386eb50f6e066dff40b97414d55b054d1ff7eee6a1a"
     checksumType   = "sha256"
     url64bit       = $cargoUrl64
-    checksum64     = "dc03e8a7b8997a372d96bfb1d32556e17a5fc015f4dc508e2da0d28456f91b5a"
+    checksum64     = "ede9bfe3b9c445be4539030985426e9d06465daf29b9232673ab0ffc55df9346"
     checksumType64 = "sha256"
 }
 
@@ -49,21 +49,21 @@ $packageStdArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $stdUrl
-    checksum       = "8f5d023f49d0d27c6e732476a40068d03cf7e25b0bf0c9ffe6e3abd254a6f19a"
+    checksum       = "6416cb5ea587d631f2fc2f62936c21a6220eab90c22cb6a85883a2f22106b681"
     checksumType   = "sha256"
     url64bit       = $stdUrl64
-    checksum64     = "7787f732d31b74227782b4bcf9c1f33c057256b769ca2b09fab0adcef4ea2dcb"
+    checksum64     = "c14a1b95a3bd63e7315cd73092644e721b09b2dc3b0aa217e1b5839cec24b0ec"
     checksumType64 = "sha256"
 }
 
 $packageMingwArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2021-05-10/rust-mingw-1.52.1-i686-pc-windows-gnu.tar.gz"
-    checksum       = "6f2ec01ca615789e57b25384e9aec5b8e2e3ea331db60c59fe7a3efb148916a7"
+    url            = "https://static.rust-lang.org/dist/2021-06-17/rust-mingw-1.53.0-i686-pc-windows-gnu.tar.gz"
+    checksum       = "7f82df79f28db00d92a107708db13a094b27142bc91610bbebabaffc5d172799"
     checksumType   = "sha256"
-    url64bit       = "https://static.rust-lang.org/dist/2021-05-10/rust-mingw-1.52.1-x86_64-pc-windows-gnu.tar.gz"
-    checksum64     = "119bed85e794f0ddc19c14b449cf3326a1cb87fab7795f8a92979b244b0cb178"
+    url64bit       = "https://static.rust-lang.org/dist/2021-06-17/rust-mingw-1.53.0-x86_64-pc-windows-gnu.tar.gz"
+    checksum64     = "af494dc837737f67e2ad9b65953f6fdb88af50ef7ca4ca5b26110dcbfba99c31"
     checksumType64 = "sha256"
 }
 
@@ -123,7 +123,7 @@ rm -recurse -force $toolsDir/rustc-$version-*
 rm -recurse -force $toolsDir/cargo-$version-*
 rm -recurse -force $toolsDir/rust-std-$version-*
 rm -recurse -force $toolsDir/rust-src-$version
-if ("https://static.rust-lang.org/dist/2021-05-10/rust-mingw-1.52.1-i686-pc-windows-gnu.tar.gz" -ne "") {
+if ("https://static.rust-lang.org/dist/2021-06-17/rust-mingw-1.53.0-i686-pc-windows-gnu.tar.gz" -ne "") {
   Install-ChocolateyZipPackage @packageMingwArgs
   Get-ChocolateyUnzip -FileFullPath $toolsDir/rust-mingw-$version-i686-pc-windows-gnu.tar -FileFullPath64 $toolsDir/rust-mingw-$version-x86_64-pc-windows-gnu.tar -Destination $toolsDir
   rm -recurse -force $toolsDir/rust-mingw-$version-*.tar
