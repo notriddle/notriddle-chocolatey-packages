@@ -67,15 +67,20 @@ chars.exe had sha256 $ExeSha256 after built.
 
 The MSVC build tools, and the Rust compiler, can both be installed directly using Chocolatey:
 
-    PS> choco install rust-ms --version 1.40.0
-    PS> choco install visualcppbuildtools --version 14.0.25420.1
+    PS> choco install rust-ms --version 1.56.0
+    PS> choco install visualcpp-build-tools --version 15.0.26228.20170424
 
-Ducible is not currently available as a Chocolatey package. I downloaded it from <https://github.com/jasonwhite/ducible/releases>.
+To make sure that I'm actually running the correct build tools, this works:
 
-    PS> Invoke-WebRequest https://github.com/jasonwhite/ducible/releases/download/v1.2.2/ducible-windows-x64-Release.zip -OutFile ducible.zip
-    PS> `$shell = New-Object -Com shell.application
-    PS> `$zip = `$shell.NameSpace("`$PWD\ducible.zip")
-    PS> foreach (`$item in `$zip.items()) { `$shell.NameSpace("C:\ProgramData\chocolatey\bin\").CopyHere(`$item) }
+    PS> link.exe /version
+    Microsoft (R) Incremental Linker Version 14.16.27045.0
+    Copyright (C) Microsoft Corporation.  All rights reserved.
+
+    LINK : fatal error LNK1146: no argument specified with option '/version'
+
+Ducible is available as a Chocolatey package.
+
+    PS> choco install ducible --version 1.2.2
 
 Then, after installing the toolchain, download the correct git tag version for this system, build it in release mode, and run ducible on it:
 
