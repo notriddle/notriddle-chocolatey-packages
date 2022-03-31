@@ -1,3 +1,3 @@
 ﻿# push to both
-git push gitlab HEAD
-git push github HEAD
+git push -f gitlab HEAD
+git push -f github HEAD
