@@ -15,8 +15,8 @@ notriddle-chocolatey-packages:
     - cp rust/rust.nuspec rust.nuspec.bak
     - cp rust-ms/rust-ms.nuspec rust-ms.nuspec.bak
     - ./update_rust.ps1
-    - if (Compare-Object $(cat rust.nuspec.bak) $(cat rust/rust.nuspec)) { ./push.ps1 rust; git add rust; git commit -m "Bump rust version" }
-    - if (Compare-Object $(cat rust-ms.nuspec.bak) $(cat rust-ms/rust-ms.nuspec)) { ./push.ps1 rust-ms; git add rust-ms; git commit -m "Bump rust-ms version" }
+    - if (! Compare-Object $(cat rust.nuspec.bak) $(cat rust/rust.nuspec)) { ./push.ps1 rust; git add rust; git commit -m "Bump rust version" }
+    - if (! Compare-Object $(cat rust-ms.nuspec.bak) $(cat rust-ms/rust-ms.nuspec)) { ./push.ps1 rust-ms; git add rust-ms; git commit -m "Bump rust-ms version" }
     - rm rust.nuspec.bak
     - rm rust-ms.nuspec.bak
     - git status
