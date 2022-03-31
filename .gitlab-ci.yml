@@ -1,4 +1,8 @@
 notriddle-chocolatey-packages:
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - tmp/channel-rust-stable.toml.sha256
   before_script:
     - git remote set-url origin "https://notriddle:${CI_JOB_TOKEN}@gitlab.com/notriddle/notriddle-chocolatey-packages.git"
     - git config --global user.email michael@notriddle.com
@@ -7,7 +11,7 @@ notriddle-chocolatey-packages:
   script:
     - Write-Host "Rust"
     - cp rust/rust.nuspec rust.nuspec.bak
-    - cp rust-ms/rust.nuspec rust-ms.nuspec.bak
+    - cp rust-ms/rust-ms.nuspec rust-ms.nuspec.bak
     - ./update_rust.ps1
     - if (Compare-Object $(cat rust.nuspec.bak) $(rust/rust.nuspec)) { ./push.ps1 rust; git add rust; git commit -m "Bump rust version" }
     - if (Compare-Object $(cat rust-ms.nuspec.bak) $(rust-ms/rust-ms.nuspec)) { ./push.ps1 rust-ms; git add rust-ms; git commit -m "Bump rust-ms version" }
