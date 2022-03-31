@@ -8,8 +8,8 @@ notriddle-chocolatey-packages:
     - git config --global user.email michael@notriddle.com
     - git config --global user.name 'Michael "notriddle" Howell'
     - choco apikey -s "https://push.chocolatey.org/" -k="${CHOCOLATEY_TOKEN}"
-    - choco install -y python
-    - refreshenv
+    - choco install --yes --no-progress --params "/InstallDir:C:\Python3" python3
+    - $env:Path = "C:\Python3;" + $env:Path
   script:
     - Write-Host "Rust"
     - cp rust/rust.nuspec rust.nuspec.bak
