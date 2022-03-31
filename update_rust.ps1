@@ -5,7 +5,7 @@ try {
     cd "_update"
 
     if (!(Test-Path "env")) {
-        python -m venv env
+        python3 -m venv env
         .\env\Scripts\pip install -r requirements.txt
     }
 
