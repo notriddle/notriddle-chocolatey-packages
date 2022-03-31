@@ -1,3 +1,5 @@
+NOTE: The github.com page for this repository is a mirror. To submit issues and merge requests, use <https://gitlab.com/notriddle/notriddle-chocolatey-packages>
+
 # notriddle-chocolatey-packages
 
 ## Pull new versions of the Rust packages

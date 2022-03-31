@@ -1,6 +1,6 @@
 notriddle-chocolatey-packages:
   before_script:
-    - git remote set-url "https://notriddle:${CI_JOB_TOKEN}@gitlab.com/notriddle/notriddle-chocolatey-packages.git"
+    - git remote set-url origin "https://notriddle:${CI_JOB_TOKEN}@gitlab.com/notriddle/notriddle-chocolatey-packages.git"
     - git config --global user.email michael@notriddle.com
     - git config --global user.name 'Michael "notriddle" Howell'
     - choco apikey -s "https://push.chocolatey.org/" -k="${CHOCOLATEY_TOKEN}"
