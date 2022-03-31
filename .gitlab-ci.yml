@@ -9,6 +9,7 @@ notriddle-chocolatey-packages:
     - git config --global user.name 'Michael "notriddle" Howell'
     - choco apikey -s "https://push.chocolatey.org/" -k="${CHOCOLATEY_TOKEN}"
     - choco install -y python
+    - refreshenv
   script:
     - Write-Host "Rust"
     - cp rust/rust.nuspec rust.nuspec.bak
