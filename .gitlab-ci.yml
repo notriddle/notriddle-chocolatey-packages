@@ -2,7 +2,7 @@ notriddle-chocolatey-packages:
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
-      - tmp/channel-rust-stable.toml.sha256
+      - _update/tmp/channel-rust-stable.toml.sha256
   before_script:
     - git remote set-url origin "https://notriddle:${CI_JOB_TOKEN}@gitlab.com/notriddle/notriddle-chocolatey-packages.git"
     - git config --global user.email michael@notriddle.com

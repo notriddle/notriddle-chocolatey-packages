@@ -32,5 +32,3 @@ try {
 } finally {
     popd
 }
-
-git add -A
