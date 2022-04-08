@@ -91,7 +91,7 @@ for package in packages:
     <projectUrl>https://www.rust-lang.org/</projectUrl>
     <projectSourceUrl>https://github.com/rust-lang/rust</projectSourceUrl>
     <bugTrackerUrl>https://github.com/rust-lang/rust/issues</bugTrackerUrl>
-    <packageSourceUrl>https://github.com/notriddle/notriddle-chocolatey-packages/</packageSourceUrl>
+    <packageSourceUrl>https://gitlab.com/notriddle/notriddle-chocolatey-packages/</packageSourceUrl>
     <iconUrl>http://www.rust-lang.org/logos/rust-logo-128x128-blk.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Rust is a curly-brace, block-structured expression language. It visually resembles the C language family, but differs significantly in syntactic and semantic details. Its design is oriented toward concerns of “programming in the large”, that is, of creating and maintaining boundaries – both abstract and operational – that preserve large-system integrity, availability and concurrency. </description>
