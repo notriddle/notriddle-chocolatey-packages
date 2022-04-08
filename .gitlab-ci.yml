@@ -10,6 +10,7 @@ notriddle-chocolatey-packages:
     - choco apikey -s "https://push.chocolatey.org/" -k="${CHOCOLATEY_TOKEN}"
     - choco install --yes --no-progress --params "/InstallDir:C:\Python3" python3
     - $env:Path = "C:\Python3;" + $env:Path
+    - git branch master
   script:
     - Write-Host "Rust"
     - cp rust/rust.nuspec rust.nuspec.bak
@@ -19,7 +20,8 @@ notriddle-chocolatey-packages:
     - if ((cat rust-ms.nuspec.bak) -ne (cat rust-ms/rust-ms.nuspec)) { ./push.ps1 rust-ms; git add rust-ms; git commit -m "Bump rust-ms version" }
     - rm rust.nuspec.bak
     - rm rust-ms.nuspec.bak
-    - git status
+  after_script:
+    - git push -u origin master
   tags:
     - shared-windows
     - windows
