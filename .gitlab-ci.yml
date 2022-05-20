@@ -21,7 +21,7 @@ notriddle-chocolatey-packages:
     - rm rust.nuspec.bak
     - rm rust-ms.nuspec.bak
   after_script:
-    - git push -u origin master
+    - git push -u origin HEAD:master
   tags:
     - shared-windows
     - windows
