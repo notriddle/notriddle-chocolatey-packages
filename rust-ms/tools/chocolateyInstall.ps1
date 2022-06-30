@@ -6,31 +6,31 @@ $version     = $env:chocolateyPackageVersion
 $packageName = $env:chocolateyPackageName
 $toolsDir    = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$rustcUrl = "https://static.rust-lang.org/dist/2022-02-24/rustc-1.59.0-i686-pc-windows-msvc.tar.gz"
-$rustcUrl64 = "https://static.rust-lang.org/dist/2022-02-24/rustc-1.59.0-x86_64-pc-windows-msvc.tar.gz"
+$rustcUrl = "https://static.rust-lang.org/dist/2022-06-30/rustc-1.62.0-i686-pc-windows-msvc.tar.gz"
+$rustcUrl64 = "https://static.rust-lang.org/dist/2022-06-30/rustc-1.62.0-x86_64-pc-windows-msvc.tar.gz"
 
-$cargoUrl = "https://static.rust-lang.org/dist/2022-02-24/cargo-1.59.0-i686-pc-windows-msvc.tar.gz"
-$cargoUrl64 = "https://static.rust-lang.org/dist/2022-02-24/cargo-1.59.0-x86_64-pc-windows-msvc.tar.gz"
+$cargoUrl = "https://static.rust-lang.org/dist/2022-06-30/cargo-1.62.0-i686-pc-windows-msvc.tar.gz"
+$cargoUrl64 = "https://static.rust-lang.org/dist/2022-06-30/cargo-1.62.0-x86_64-pc-windows-msvc.tar.gz"
 
-$stdUrl = "https://static.rust-lang.org/dist/2022-02-24/rust-std-1.59.0-i686-pc-windows-msvc.tar.gz"
-$stdUrl64 = "https://static.rust-lang.org/dist/2022-02-24/rust-std-1.59.0-x86_64-pc-windows-msvc.tar.gz"
+$stdUrl = "https://static.rust-lang.org/dist/2022-06-30/rust-std-1.62.0-i686-pc-windows-msvc.tar.gz"
+$stdUrl64 = "https://static.rust-lang.org/dist/2022-06-30/rust-std-1.62.0-x86_64-pc-windows-msvc.tar.gz"
 
 $packageArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $rustcUrl
-    checksum       = "b782775080619f2fa42d70780c8bed5d13e64683b0ad24b99c2a1b2226a44fdf"
+    checksum       = "ecb68226397b2a14b354e13c2113ae7152d8af0134455557f02106c391369618"
     checksumType   = "sha256"
     url64bit       = $rustcUrl64
-    checksum64     = "e838ecdba060b4ad3d0becc08027c9598977db40ac1f4e5fa9231725110ea06b"
+    checksum64     = "a40214b9280a5a9bc3f251afe8fd59edf270c6f57be8e5b1b9a64665d5505bbb"
     checksumType64 = "sha256"
 }
 
 $packageSrcArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
-    url            = "https://static.rust-lang.org/dist/2022-02-24/rust-src-1.59.0.tar.gz"
-    checksum       = "127658a5237cce6dd43ce9d9113fc104ea6902cc8c850272fba07d92140fab12"
+    url            = "https://static.rust-lang.org/dist/2022-06-30/rust-src-1.62.0.tar.gz"
+    checksum       = "b26a32f487cc19e6c503b0050f5f4f248d46e1fcbc69a2d9ac19f5a2da0bf8f0"
     checksumType   = "sha256"
 }
 
@@ -38,10 +38,10 @@ $packageCargoArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $cargoUrl
-    checksum       = "ea0b05eedb4677bfb5854de89909732a39f95aed536e48a84fa0903962e46c2b"
+    checksum       = "767b802d0d52f6df09f3c2a8d85616549d7c75452592c2c37fbe48fb187c1701"
     checksumType   = "sha256"
     url64bit       = $cargoUrl64
-    checksum64     = "4cf585f1a3b295f6d51873c189c2b9d114861a4b41b44ad5245cbf119272a6f2"
+    checksum64     = "4ae611128dee1ca2060cffec20df67a9fbb9731d51c6cd789b9161ab1e6eb3f3"
     checksumType64 = "sha256"
 }
 
@@ -49,10 +49,10 @@ $packageStdArgs = @{
     packageName    = $packageName
     unzipLocation  = $toolsDir
     url            = $stdUrl
-    checksum       = "902486a8a97e0a502275e7e8bc5264c2794e1c20b88349084d88fe19fe1c3e03"
+    checksum       = "05e40fb09267acfe623ea9fdc8472b04c172ca631a5838f86df6b8cb2add2496"
     checksumType   = "sha256"
     url64bit       = $stdUrl64
-    checksum64     = "fae30c5c9ac491380b556377fb0e804b35707118c5e69f8190debf828c9ad863"
+    checksum64     = "eb7be417576ae9d95bf3e5bf5973fc06509005f2aa61173baf0e62bf8b7df4f6"
     checksumType64 = "sha256"
 }
 
