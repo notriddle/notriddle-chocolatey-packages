@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>rust-ms</id>
-    <version>1.62.1</version>
+    <version>1.63.0</version>
     <title>Rust (Visual Studio ABI)</title>
     <authors>Mozilla</authors>
     <owners>Mike Chaliy, Francisco Gómez, Michael Howell</owners>
